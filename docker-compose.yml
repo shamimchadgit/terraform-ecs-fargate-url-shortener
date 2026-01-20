@@ -1,0 +1,32 @@
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: url-shortener-localstack-1
+    ports:
+      - "4566:4566"
+    environment:
+      DEBUG: "1"
+      AWS_DEFAULT_REGION: eu-north-1
+      LOCALSTACK_SERVICES: dynamodb, s3
+    volumes:
+      - ./localstack:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  app:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_REGION: eu-north-1
+      TABLE_NAME: url_shortener_table
+      LOCALSTACK_HOST: localstack
+    depends_on:
+      - localstack
+
+
+  

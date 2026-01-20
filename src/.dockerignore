@@ -1,0 +1,23 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo 
+*.pyd
+
+# Ignore git stuff
+.git/
+.gitignore
+
+#OS-specific files
+.DS_Store
+Thumbs.db
+
+# Pytest
+.cache/
+.pytest_cache/
+
+# Avoid nesting Docker images
+docker/
+
+# Environment files
+.env
