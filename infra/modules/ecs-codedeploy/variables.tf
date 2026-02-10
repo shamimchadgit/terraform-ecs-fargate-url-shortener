@@ -24,13 +24,13 @@ variable "alb_test_listener_arn" {
     description = "ARN for the alb test listener"
 }
 
-variable "blue_target_group_arn" {
+variable "blue_target_group_name" {
     type = string 
-    description = "ARN of blue target group"
+    description = "Name of blue target group"
 }
 
-variable "green_target_group_arn" {
+variable "green_target_group_name" {
     type = string
-    description = "ARN of green target group"
+    description = "Name of green target group"
 }
 

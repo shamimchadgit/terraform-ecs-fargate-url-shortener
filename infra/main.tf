@@ -18,22 +18,22 @@ module "alb" {
 # IAM Github Actions
 
 module "iam_github_oidc" {
-  source = "./modules/iam-github-oidc"
-  ecr_repo_arn = module.ecr.ecr_repo_arn
+  source                      = "./modules/iam-github-oidc"
+  ecr_repo_arn                = module.ecr.ecr_repo_arn
   ecs_task_execution_role_arn = module.ecs.ecs_task_execution_role_arn
-  ecs_task_role_arn = module.ecs.ecs_task_role_arn
+  ecs_task_role_arn           = module.ecs.ecs_task_role_arn
 }
 
 # Code Deploy
 
 module "codedeploy" {
-  source = "./modules/ecs-codedeploy"
-  cluster_name = module.ecs.ecs_cluster_name
-  blue_target_group_name = module.alb.tg_blue_name
+  source                  = "./modules/ecs-codedeploy"
+  cluster_name            = module.ecs.ecs_cluster_name
+  blue_target_group_name  = module.alb.tg_blue_name
   green_target_group_name = module.alb.tg_green_name
-  alb_listener_arn = module.alb.alb_listener
-  alb_test_listener_arn = module.alb.alb_test_listener
-  codedeploy_role_arn = module.ecs-codedeploy.codedeploy_role_arn
+  alb_listener_arn        = module.alb.alb_listener
+  alb_test_listener_arn   = module.alb.alb_test_listener
+  codedeploy_role_arn     = module.ecs-codedeploy.codedeploy_role_arn
 }
 
 # Network 
@@ -83,9 +83,9 @@ module "acm" {
 # ECR
 
 module "ecr" {
-  source = "./modules/ecr"
-  latest_img = 5
+  source             = "./modules/ecr"
+  latest_img         = 5
   untagged_count_num = 10
-  
+
 }
 

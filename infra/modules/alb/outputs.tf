@@ -21,9 +21,18 @@ output "alb_listener" {
     value = aws_lb_listener.prod_listener.arn
 }
 
+output "tg_blue_name" {
+    value = aws_lb_target_group.tg_blue.name
+}
+
 output "tg_blue_arn" {
     description = "ARN for live target group (blue)"
     value = aws_lb_target_group.tg_blue.arn
+}
+
+output "tg_green_name" {
+    value = aws_lb_target_group.tg_green.name
+  
 }
 
 output "tg_green_arn" {
