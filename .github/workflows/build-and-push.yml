@@ -1,12 +1,12 @@
 name: build-and-push
 
-on: 
+on:
     push: 
         branches: [ main ]
-
-permissions:
-    id-token: write
-    contents: read
+# updating Github Actions WF for OIDC        
+permissions: # perm settings for token
+    id-token: write # req'd for req'st JWT
+    contents: read  # req'd for actions/checkout
 
 env:
     AWS_REGION: eu-west-2
