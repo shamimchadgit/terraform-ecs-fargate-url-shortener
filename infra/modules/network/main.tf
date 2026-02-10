@@ -11,13 +11,16 @@ locals {
     "com.amazonaws.${var.region}.ecr.api",
     "com.amazonaws.${var.region}.ecr.dkr",
     "com.amazonaws.${var.region}.logs",
-    "com.amazonaws.${var.region}.sts"
+    "com.amazonaws.${var.region}.sts",
+    "com.amazonaws.${var.region}.ecs",
+    "com.amazonaws.${var.region}.ecs-agent",
+    "com.amazonaws.${var.region}.ecs-telementry"
   ]
   setup_name = "url-shortener"
 }
 
 # Local variable as using the same name multiple times
-# Terraform allows only allows one per file so merge locals block 
+# Terraform allows one per file so merge locals block 
 
 
 # VPC
@@ -110,6 +113,7 @@ resource "aws_route_table_association" "pr_rt_as" {
 resource "aws_vpc_endpoint" "s3" {
     vpc_id = aws_vpc.main.id
     service_name = "com.amazonaws.${var.region}.s3"
+    # API req to reach S3
     route_table_ids = [aws_route_table.pr_rt.id]
     vpc_endpoint_type = "Gateway"
     tags = {
@@ -215,7 +219,7 @@ resource "aws_security_group" "ecs_sg" {
         protocol = "tcp"
         security_groups = [aws_security_group.alb_sg.id]
     } # SG ref only allows inbound tr only from ALB as ECS not public
-    # if req doesn't come from ALB - won't answer
+    # if request doesn't come from ALB - won't answer
 
     egress {
         from_port = 0

@@ -1,10 +1,11 @@
+# Files tells CodeDeploy how your app 
 version: 0.0
 Resources:
   - TargetService:
       Type: AWS::ECS::Service
       Properties:
-        TaskDefinition: 
+        TaskDefinition: "__TASK_DEF_ARN__" # task def arn
         LoadBalancerInfo:
-          ContainerName:
-          ContainerPort:
+          ContainerName: "ecs-task-definition" #name of container inside task
+          ContainerPort: 8080 # port app listens on
           

@@ -6,7 +6,7 @@ resource "aws_codedeploy_app" "url_shortener_app" {
 resource "aws_codedeploy_deployment_group" "ecs_deploy_group" { # deployment rules
     app_name = aws_codedeploy_app.url_shortener_app.name
     deployment_config_name = "CodeDeployDefault.ECSAllAtOnce" # how tr shifts between b & g
-    deployment_group_name = "${var.cluster_name}-cd-group" # name of the enviornment 
+    deployment_group_name = "${var.cluster_name}-cd-group" # name of the environment 
     service_role_arn = var.codedeploy_role_arn # IAM role CodeDeploy uses to act on my behalf 
 
     blue_green_deployment_config { # extra rules for b & g deployments 
@@ -33,10 +33,10 @@ resource "aws_codedeploy_deployment_group" "ecs_deploy_group" { # deployment rul
           listener_arns = [var.alb_listener_arn]
         }
         target_group {
-          name = var.blue_target_group_arn
+          name = aws_lb_target_group.tg_blue.name
         }
         target_group {
-          name = var.green_target_group_arn
+          name = aws_lb_target_group.tg_green.name
         }
         test_traffic_route {
           listener_arns = [var.alb_test_listener_arn]

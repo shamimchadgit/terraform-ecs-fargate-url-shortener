@@ -18,7 +18,7 @@ output "zone_id" {
 
 output "alb_listener" {
     description = "ARN for the alb listener"
-    value = aws_lb_listener.https.arn
+    value = aws_lb_listener.prod_listener.arn
 }
 
 output "tg_blue_arn" {

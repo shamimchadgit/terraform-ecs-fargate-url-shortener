@@ -10,6 +10,11 @@ variable "scope_type" {
     type = string
     description = "value"
     default = "REGIONAL"
+
+    validation {
+      condition = contains(["REGIONAL", "CLOUDFRONT"], var.scope_type)
+      error_message = "scope_type must be REGIONAL or CLOUDFRONT"
+    } # use guardrail validation to protect against wrong scope usage 
 }
 
 variable "ip_address_version_type" {

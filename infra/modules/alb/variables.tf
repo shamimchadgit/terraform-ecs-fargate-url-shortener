@@ -1,3 +1,11 @@
+# Local variable 
+
+variable "cluster_name" {
+    type = string
+    description = "the setup name of my cluster I want to re-use"
+    default = "url-shortener" 
+}
+
 # ALB - Variables
 
 variable "load_balancer_type" {
@@ -18,6 +26,12 @@ variable "subnets" {
 
 # TG - Variables
 
+variable "container_port" {
+    type = number
+    description = "the tg ports which are the same as container"
+    default = 8080
+  
+}
 variable "target_type" {
     type = string
     default = "ip"

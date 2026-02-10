@@ -7,7 +7,7 @@ resource "aws_wafv2_ip_set" "blacklist" {
 
 resource "aws_wafv2_web_acl" "alb_acl" {
     name = var.aws_wafv2_web_acl_name
-    description = "WAF to attach to ALB for protection against bad traffic"
+    description = "WAF attach to ALB to protect against bad tr"
     scope = var.scope_type
 
     default_action {
@@ -16,7 +16,7 @@ resource "aws_wafv2_web_acl" "alb_acl" {
   
   rule {
     name = var.rule_one_name
-    priority = 1
+    priority = 2
     
     override_action {
       none {}
@@ -36,7 +36,7 @@ resource "aws_wafv2_web_acl" "alb_acl" {
 
   rule {
     name = var.rule_two_name
-    priority = 2
+    priority = 1
 
     action {
       block {}

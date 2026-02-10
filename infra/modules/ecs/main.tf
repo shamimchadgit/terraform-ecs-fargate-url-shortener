@@ -52,6 +52,13 @@ resource "aws_ecs_cluster" "main" {
 
 # ECS Task Definition
 resource "aws_ecs_task_definition" "app" {
+  depends_on = [ # not needed but added to avoid eventual consistency issues in ECS/IAM
+        aws_iam_role_policy_attachment.execution_role,
+        aws_iam_role_policy.task_policy,
+        aws_cloudwatch_log_group.ecs,
+        aws_ssm_parameter.task_cpu,
+        aws_ssm_parameter.task_memory
+    ]
   family                   = "${var.cluster_name}-task" # required
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc" #give each task it's own ENI inside my VPC
@@ -60,39 +67,36 @@ resource "aws_ecs_task_definition" "app" {
   execution_role_arn = aws_iam_role.task_execution.arn # hook IAM execution role arn
   task_role_arn = aws_iam_role.task_role.arn # hook IAM task role arn
   
-  container_definitions    = jsonencode( #required - converts HCL object (what i wrote above) to JSN for AWS to consume 
-[
+  container_definitions = jsonencode( #required - converts HCL object (what i wrote above) to JSN for AWS to consume 
+  [
   {
-    name = var.task_def_name,
-    image = var.image,
-    cpu = data.aws_ssm_parameter.task_cpu.value
-    memory = data.aws_ssm_parameter.task_memory.value,
+    name = var.container_name
+    image = var.image
+    cpu = tonumber(data.aws_ssm_parameter.task_cpu.value)
+    memory = tonumber(data.aws_ssm_parameter.task_memory.value)
     essential = var.essential
+    
     portMappings = [{
         containerPort = var.container_port
         hostPort = var.container_port
         protocol = "tcp"
     }
-  ]
+  ],
   logConfiguration = {
     logDriver = "awslogs"
     options = {
         awslogs-group = "/ecs/${var.cluster_name}"
-        awslogs-region = data.aws_region.current.name
+        awslogs-region = data.aws_region.current.id
         awslogs-stream-prefix = "ecs"
     }
-    depends_on = [
-        aws_iam_role_policy_attachment.execution_role,
-        aws_iam_role_policy.task_policy
-    ]
-  }
+  },
   environment = [{
     name = "TABLE_NAME"
     value = var.table_name
   },
   {
     name = "AWS_REGION"
-    value = data.aws_region.current.name
+    value = data.aws_region.current.id
   }]
   }
 ])
@@ -125,7 +129,7 @@ resource "aws_ecs_service" "svc" {
 }
   load_balancer {
     target_group_arn = var.target_group_arn #req'd for ALB
-    container_name = var.task_def_name # required
+    container_name = var.container_name # required
     container_port = var.container_port # required
   }
   lifecycle {
@@ -140,23 +144,24 @@ resource "aws_ecs_service" "svc" {
 }
 
 # SSM Parameter 
-data "aws_ssm_parameter" "task_cpu" {
-    name = aws_ssm_parameter.task_cpu.name
-}
-data "aws_ssm_parameter" "task_memory" {
-    name = aws_ssm_parameter.task_memory.name
-}
 
 resource "aws_ssm_parameter" "task_cpu" {
-    name = "/ecs/${var.cluster_name}"
+    name = "/ecs/${var.cluster_name}/cpu"
     type = "String"
     value = tostring(var.cpu)
 }
 
 resource "aws_ssm_parameter" "task_memory" {
-    name = "/ecs/${var.cluster_name}"
+    name = "/ecs/${var.cluster_name}/memory"
     type = "String"
-    value = toString(var.memory)
+    value = tostring(var.memory)
+}
+
+data "aws_ssm_parameter" "task_cpu" {
+    name = aws_ssm_parameter.task_cpu.name
+}
+data "aws_ssm_parameter" "task_memory" {
+    name = aws_ssm_parameter.task_memory.name
 }
 
 ### Might include a depends_on (race condition) as ECS task def depends on other factors: IAM, CW logs, SSM param

@@ -1,5 +1,5 @@
 locals {
-  setup_name = "url-shortener"
+  setup_name = var.cluster_name
   }
 
 # ALB
@@ -16,10 +16,10 @@ resource "aws_lb" "alb" {
 # Target Group (blue + green)
 
 resource "aws_lb_target_group" "tg_blue" {
-    name = "${local.setup_name}-tg-blue"
+    name = substr("${local.setup_name}-tg-blue", 0, 32)
     target_type = var.target_type
-    port = 8080 # TG needs to match container port
-    protocol = var.protocol
+    port = var.container_port # TG needs to match container port
+    protocol = var.tg_protocol
     vpc_id = var.vpc_id
 
     health_check {
@@ -28,7 +28,7 @@ resource "aws_lb_target_group" "tg_blue" {
       interval = 30
       matcher = "200"
       path = "/healthz"
-      timeout = 10
+      timeout = 5
       unhealthy_threshold = 2
     }
 
@@ -38,10 +38,10 @@ resource "aws_lb_target_group" "tg_blue" {
 }
 
 resource "aws_lb_target_group" "tg_green" {
-    name = "${local.setup_name}-tg-green"
+    name = substr("${local.setup_name}-tg-green", 0, 32)
     target_type = var.target_type
-    port = 8080 # TG needs to match container port 
-    protocol = var.protocol
+    port = var.container_port # TG needs to match container port 
+    protocol = var.tg_protocol
     vpc_id = var.vpc_id
 
     health_check {
@@ -50,7 +50,7 @@ resource "aws_lb_target_group" "tg_green" {
       interval = 30
       matcher = "200"
       path = "/healthz"
-      timeout = 10
+      timeout = 5
       unhealthy_threshold = 2
     }
 
@@ -72,7 +72,7 @@ resource "aws_lb_listener" "prod_listener" {
       target_group_arn = aws_lb_target_group.tg_blue.arn
     } # blue tg as this is our live version w/ real customer tr
     lifecycle {
-      ignore_changes = [ default_action ]
+      ignore_changes = [ default_action ] # CodeDeploy dynamically rewires listeners during b/g deployments
     }
 } 
 
