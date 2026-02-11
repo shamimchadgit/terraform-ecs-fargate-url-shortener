@@ -14,7 +14,7 @@ locals {
     "com.amazonaws.${var.region}.sts",
     "com.amazonaws.${var.region}.ecs",
     "com.amazonaws.${var.region}.ecs-agent",
-    "com.amazonaws.${var.region}.ecs-telementry"
+    "com.amazonaws.${var.region}.ecs-telemetry"
   ]
   setup_name = "url-shortener"
 }
@@ -192,7 +192,7 @@ resource "aws_security_group" "alb_sg" {
         from_port = 9000
         to_port = 9000
         protocol = "tcp"
-        cidr_blocks = ["10.0.0.0/16"]
+        cidr_blocks = [var.cidr]
     }
     # Allow ALB to reach ECS tasks 
     egress { # as ALB doesn't have a stable/predictable destination so can't restrict outbound tr tightly 
