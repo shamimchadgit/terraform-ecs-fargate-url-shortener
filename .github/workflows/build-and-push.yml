@@ -19,14 +19,14 @@ jobs:
             - uses: actions/checkout@v4
             - uses: aws-actions/configure-aws-credentials@v4
               with:
-                role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN}}
+                role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
                 aws-region: ${{ env.AWS_REGION }}
             - uses: aws-actions/amazon-ecr-login@v2
 
             - name: Build Image
               run: |
                 IMAGE_TAG=${GITHUB_SHA::7}
-                docker build -t $ECR_REPO:$IMAGE_TAG
+                docker build -t $ECR_REPO:$IMAGE_TAG ecs-task-definition
                 docker tag $ECR_REPO:$IMAGE_TAG \
                     ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:$IMAGE_TAG
                 echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
@@ -34,7 +34,7 @@ jobs:
             - name: Trivy Scan
               uses: aquasecurity/trivy-action@master
               with:
-                image-ref: $ecr-repo:${{ env.IMAGE_TAG }}
+                image-ref: $ECR_REPO:${{ env.IMAGE_TAG }}
                 severity: CRITICAL,HIGH
                 exit-code: 1
             
