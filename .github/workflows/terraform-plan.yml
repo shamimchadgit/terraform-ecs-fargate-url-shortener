@@ -24,3 +24,5 @@ jobs:
                 cd infra/src/venv
                 terraform init
                 terraform plan 
+
+# Codedeploy will auto handle b/g when the task def changes 
