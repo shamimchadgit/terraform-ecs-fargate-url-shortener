@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import RedirectResponse, HTMLResponse
 from pydantic import BaseModel
 import hashlib
@@ -52,22 +52,22 @@ def shorten(payload: ShortenRequest):
     url = payload.URL
     
     # short HASH ID
-    short = hashlib.sha256(url.encode("utf-8")).hexdigest()[:8]
+    short_url = hashlib.sha256(url.encode("utf-8")).hexdigest()[:8]
     
     try:
-        put_mapping(short_id, url)
+        put_mapping(short_url, url)
     except Exception as e:
         print("DynamoDB error:", e)
         raise HTTPException(status_code=500, detail="Failed to store URL")
     return {
-        "short": short_id,
+        "short": short_url,
         "URL": url
     }
     
 # Resolve short url
-@app.get("/short/{short_id}")
-def resolve(short_id: str):
-    item = get_mapping(short_id)
+@app.get("/short/{short_url}")
+def resolve(short_url: str):
+    item = get_mapping(short_url)
     
     if not item:
         raise HTTPException(status_code=404, detail="Not Found")
