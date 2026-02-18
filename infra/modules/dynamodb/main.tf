@@ -8,6 +8,10 @@ resource "aws_dynamodb_table" "url_shortener" {
       name = "short_url"
       type = "S"
     } 
+
+    point_in_time_recovery {
+      enabled = var.enabled
+    }
     tags = {
       Name = "url_shortener_table"
     }

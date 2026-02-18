@@ -37,7 +37,7 @@ variable "target_type" {
     default = "ip"
 }
 
-variable "protocol" {
+variable "tg_protocol" {
     type = string
     default = "HTTP"
 }

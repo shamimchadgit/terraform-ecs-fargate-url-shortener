@@ -5,6 +5,11 @@ variable "cluster_name" {
     description = "name of ECS cluster"
 }
 
+variable "service_name" {
+    type = string
+    description = "name of ECS service"
+}
+
 # Code Deploy
 
 variable "codedeploy_role_arn" {

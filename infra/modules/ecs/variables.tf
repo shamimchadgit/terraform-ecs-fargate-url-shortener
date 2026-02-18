@@ -14,7 +14,7 @@ variable "cluster_name" {
 
 # Task Definition Name
 
-variable "task_def_name" {
+variable "container_name" {
     type = string
     description = "Name of ECS Task Definition"
     default = "ecs-task-definition"

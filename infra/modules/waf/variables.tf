@@ -8,7 +8,7 @@ variable "aws_wafv2_ip_set_name" {
 
 variable "scope_type" {
     type = string
-    description = "value"
+    description = ""
     default = "REGIONAL"
 
     validation {

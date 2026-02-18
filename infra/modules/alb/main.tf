@@ -80,7 +80,7 @@ resource "aws_lb_listener" "prod_listener" {
 resource "aws_lb_listener" "test_listener" {
     load_balancer_arn = aws_lb.alb.arn
     port = 9000
-    protocol = "HTTP" #doesn't require ACM (HTTPS) as code deploy can't be bad actor 
+    protocol = "HTTP" #doesn't require ACM (HTTPS) as code deploy can't be bad actor
     default_action {
       type = "forward"
       target_group_arn = aws_lb_target_group.tg_green.arn
@@ -92,6 +92,5 @@ resource "aws_lb_listener" "test_listener" {
 
 ### We use blue tg arn as it is the intial active environment 
 
-# when I add ACM SSL need certifcate_arn and a listener on port 443
 
 

@@ -23,8 +23,8 @@ resource "aws_codedeploy_deployment_group" "ecs_deploy_group" { # deployment rul
       deployment_type = "BLUE_GREEN" 
     }
     ecs_service { # point code deploy to exact ECS cluster + service 
-      cluster_name = aws_ecs_cluster.main.name
-      service_name = aws_ecs_service.svc.name
+      cluster_name = var.cluster_name
+      service_name = var.service_name
     }
 ### Need to check this part properly as not sure what to do with the test_traffic_route 
     load_balancer_info {
@@ -33,10 +33,10 @@ resource "aws_codedeploy_deployment_group" "ecs_deploy_group" { # deployment rul
           listener_arns = [var.alb_listener_arn]
         }
         target_group {
-          name = aws_lb_target_group.tg_blue.name
+          name = var.blue_target_group_name
         }
         target_group {
-          name = aws_lb_target_group.tg_green.name
+          name = var.green_target_group_name
         }
         test_traffic_route {
           listener_arns = [var.alb_test_listener_arn]
