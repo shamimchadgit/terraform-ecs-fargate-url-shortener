@@ -46,4 +46,11 @@ variable "ecs_task_role_arn" {
     type = string
     description = ""
 }
-  
+
+variable "s3_arn" {
+    type = string
+}
+
+variable "kms_arn" {
+    type = string
+}

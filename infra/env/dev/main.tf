@@ -84,8 +84,8 @@ module "route_53" {
 
 module "backend" {
     source = "../../global/backend"
-    bucket_name = module.backend.bucket_name
     aws_region = var.aws_region
+    bucket_name = var.bucket_name
 }
 
 # IAM Github Actions OIDC

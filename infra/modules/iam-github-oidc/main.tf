@@ -64,41 +64,41 @@ resource "aws_iam_policy" "github_ecr_policy" {
         Resource = [var.ecr_repo_arn]
       },
       {
-        Effect = "Allow"
-        Action = "ecs*"
+        Effect = "Allow",
+        Action = "ecs*",
         Resource = "*"
       },
       {
-        Effect = "Allow"
-        Action = "codedeploy:*"
+        Effect = "Allow",
+        Action = "codedeploy:*",
         Resource = "*"
       },
       {
-        Effect = "Allow"
-        Action = "iam:PassRole"
+        Effect = "Allow",
+        Action = "iam:PassRole",
         Resource = [
           var.ecs_task_execution_role_arn,
           var.ecs_task_role_arn
         ]
       },
       {
-        Effect = "Allow"
-        Action = "elasticloadbalancing:Describe*"
+        Effect = "Allow",
+        Action = "elasticloadbalancing:Describe*",
         Resource = "*"
       },
       {
-        Effect = "Allow"
-        Action = "ssm:GetParameter"
+        Effect = "Allow",
+        Action = "ssm:GetParameter",
         Resource = "*"
       },
       {
-        Effect = "Allow"
-        Action = "cloudwatch:Describe*"
+        Effect = "Allow",
+        Action = "cloudwatch:Describe*",
         Resource = "*"
       },
       {
-        Effect = "Allow"
-        Action = "logs:DescribeLogGroups"
+        Effect = "Allow",
+        Action = "logs:DescribeLogGroups",
         Resource = "*"
       }
     ]
@@ -111,31 +111,31 @@ resource "aws_iam_policy" "s3_policy" {
   name = "s3-policy"
 
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow"
-        Action = [ "s3:ListBucket" ]
-        Resource = "${aws_s3_bucket.tf_state.arn}"
+        Effect = "Allow",
+        Action = [ "s3:ListBucket" ],
+        Resource = [var.s3_arn]
       },
       {
-        Effect = "Allow"
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
+        Resource = "${var.s3_arn}/*"
+      },
+      {
+        Effect = "Allow",
         Action = [
           "kms:Encrypt",
           "kms:Decrypt",
           "kms:GenerateDataKey",
           "kms:DescribeKey"
-        ]
-        Resource = "${aws_kms_key.tf_state.arn}"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject"
-        ]
-        Resource = "${aws_s3_bucket.tf_state.arn}/*"
+        ],
+        Resource = [var.kms_arn]
       }
     ]
   })

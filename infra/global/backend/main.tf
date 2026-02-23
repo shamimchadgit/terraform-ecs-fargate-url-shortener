@@ -38,7 +38,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tf_state" {
   }
 }
 
-# Block public acces to s3 bucket
+# Block public access to s3 bucket
 
 resource "aws_s3_bucket_public_access_block" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
@@ -57,48 +57,3 @@ resource "aws_s3_bucket_ownership_controls" "tf_state" {
     object_ownership = "BucketOwnerEnforced"
   }
 }
-
-
-# IAM policy for terraform
-
-resource "aws_iam_policy" "s3_policy" {
-  name = "s3-policy"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [ "s3:ListBucket" ]
-        Resource = "${aws_s3_bucket.tf_state.arn}"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:GenerateDataKey",
-          "kms:DescribeKey"
-        ]
-        Resource = "${aws_kms_key.tf_state.arn}"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject"
-        ]
-        Resource = "${aws_s3_bucket.tf_state.arn}/*"
-      }
-    ]
-  })
-}
-
-# S3 state policy
-
-resource "aws_iam_role_policy_attachment" "tf_state" {
-  role =
-  policy_arn = aws_iam_policy.s3_policy.arn
-}
-
