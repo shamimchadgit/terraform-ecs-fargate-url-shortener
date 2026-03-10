@@ -1,0 +1,98 @@
+name: deploy-consumer
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+            - "src/analytics_consumer/**"
+
+permissions:
+    id-token: write
+    contents: read
+
+env:
+    AWS_REGION: ${{ secrets.AWS_REGION }}
+    ECR_REPO_CONSUMER: ${{ secrets.ECR_REPO_CONSUMER }}
+    CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+    SERVICE_NAME_CONSUMER: ${{ secrets.SERVICE_NAME_CONSUMER }}
+
+jobs:
+  check-infra:
+    runs-on: ubuntu-latest
+    
+    steps:
+        - uses: actions/checkout@v4
+
+        - uses: aws-actions/configure-aws-credentials@v4
+          with:
+            role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+            aws-region: ${{ env.AWS_REGION }}
+
+        - uses: hashicorp/setup-terraform@v3
+
+        - name: Verify Kafka Exists
+          run: |
+            cd infra/env/dev
+            terraform init -input=false
+            terraform output -json > tf.json
+            KAFKA=$(jq -r '.kafka_bootstrap.value' tf.json)
+
+            if [ "$KAFKA" = "null" ] || [ -z "$KAFKA" ]; then
+              echo "Kafka not provisioned."
+              exit 1
+            fi
+  deploy:
+      needs: check-infra
+      runs-on: ubuntu-latest 
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - uses: aws-actions/configure-aws-credentials@v4
+          with:
+            role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+            aws-region: ${{ env.AWS_REGION }}
+
+        - uses: aws-actions/amazon-ecr-login@v2
+
+        - name: Build & Tag Image
+          run: |
+            IMAGE_TAG=${GITHUB_SHA::7}
+            docker build -t $ECR_REPO_CONSUMER:$IMAGE_TAG src/analytics_consumer
+            docker tag $ECR_REPO_CONSUMER:$IMAGE_TAG \
+              ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO_CONSUMER:$IMAGE_TAG
+            echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+        - name: Trviy Scan 
+          uses: aquasecurity/trivy-action@master
+          with:
+            image-ref: $ECR_REPO_CONSUMER:${{ env.IMAGE_TAG }}
+            severity: CRITICAL,HIGH
+            exit-code: 1
+        
+        - name: Push Image to ECR
+          run: |
+            docker push \
+              ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO_CONSUMER:${IMAGE_TAG}
+            
+        - name: Update ECS Service
+          run: |
+            TASK_DEF_JSON=$(aws ecs describe-task-definition \
+            --task-definition analytics-consumer)
+
+            NEW_TASK_DEF=$(echo $TASK_DEF_JSON | jq \
+            --arg IMAGE "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_CONSUMER}:${IMAGE_TAG}" \
+            '.taskDefinition
+            | del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy)
+            | .containerDefinitions[0].image = $IMAGE')
+
+            TASK_DEF_ARN=$(echo $NEW_TASK_DEF | aws ecs register-task-definition \
+            --cli-input-json file:///dev/stdin \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+            aws ecs update-service \
+              --cluster $CLUSTER_NAME \
+              --service $SERVICE_NAME_CONSUMER \
+              --task-definition $TASK_DEF_ARN
+            
