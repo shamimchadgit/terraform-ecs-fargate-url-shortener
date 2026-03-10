@@ -65,7 +65,7 @@ resource "aws_iam_policy" "github_ecr_policy" {
       },
       {
         Effect = "Allow",
-        Action = "ecs*",
+        Action = "ecs:*",
         Resource = "*"
       },
       {
