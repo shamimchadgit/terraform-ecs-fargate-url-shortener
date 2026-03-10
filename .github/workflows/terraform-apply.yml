@@ -1,30 +1,35 @@
 name: terraform-apply 
 
 on:
-    push:
-        branches: [ main ]
+  push:
+    branches: [ main ]
+    paths:
+        - "infra/**"
 
 permissions: 
-    id-token: write
-    contents: read 
+  id-token: write
+  contents: read 
 
 env:
-    AWS_REGION: eu-west-2
+  AWS_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
-    apply:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
+  apply:
+    runs-on: ubuntu-latest
+        
+    steps:
+      - uses: actions/checkout@v4
 
-            - uses: aws-actions/configure-aws-credentials@v4
-              with:
-                role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN}}
-                aws-region: ${{ env.AWS_REGION }}
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
             
-            - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
 
-            - run: |
-                cd infra/src/venv
-                terraform init
-                terraform apply -auto-approve
+
+      - name: Terraform Apply
+        run: |
+          cd infra/env/dev
+          terraform init
+          terraform apply -auto-approve
