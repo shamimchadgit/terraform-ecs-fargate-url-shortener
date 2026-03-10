@@ -11,17 +11,20 @@ variable "bucket_name" {
     default = "tf-state-url-short-kafka-26"
 }
 
+# Kafka 
+
+variable "kafka_instance_type" {
+  description = "EC2 instance type for Kafka broker"
+  type        = string
+  default = "t3.small"
+}
+
 # ACM 
 
 variable "domain_name" {
   type        = string
   description = ""
   default     = "dev.shamimchaudhury.uk"
-}
-
-variable "validation_record_fqdns" {
-    type = list(string)
-    description = ""
 }
 
 # ALB
@@ -173,4 +176,21 @@ variable "alb_zone_id" {
 variable "alb_arn" {
     type = string
     description = "ARN of the ALB to attach this WAF to"
+}
+
+# ECS / ECR
+variable "app_image_repo_name" {
+  type        = string
+  description = "ECR repository name for producer app"
+}
+
+variable "consumer_image_repo_name" {
+  type        = string
+  description = "ECR repository name for analytics consumer"
+}
+
+# GitHub OIDC role for CI/CD
+variable "github_repo" {
+  type        = string
+  description = "GitHub repository used for OIDC CI/CD"
 }
