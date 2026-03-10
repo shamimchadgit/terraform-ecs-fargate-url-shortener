@@ -99,15 +99,13 @@ module "iam_github_oidc" {
   ecr_repo_arn                = module.ecr.ecr_repo_arn
   ecs_task_execution_role_arn = module.ecs.ecs_task_execution_role_arn
   ecs_task_role_arn           = module.ecs.ecs_task_role_arn
-  s3_arn                      = data.aws_s3_bucket.backend_bucket.arn
-  kms_arn                     = module.backend.kms_arn
   ecr_consumer_repo_arn       = module.ecr.ecr_consumer_repo_arn
-  repo_name = var.repo_name
+  repo_name                   = var.repo_name
+
+  s3_arn  = var.s3_arn
+  kms_arn = var.kms_arn
 }
 
-data "aws_s3_bucket" "backend_bucket" {
-  bucket = var.bucket_name
-}
 
 # Kafka
 
@@ -116,6 +114,7 @@ module "kafka" {
   private_sub_id         = module.network.private_subnet_ids[0]
   kafka_assets_s3_bucket = aws_s3_bucket.kafka_assets.arn
   instance_type          = var.kafka_instance_type
+  security_group_ids     = [module.network.kafka_sg_id]
   public_ip              = false
 
   depends_on = [aws_s3_object.kafka_binary]
@@ -134,7 +133,6 @@ module "ecs_consumer" {
   consumer_sg_ids    = [module.network.ecs_consumer_sg_id]
   dynamodb_table_arn = module.dynamodb.table_arn
   cluster_name       = "${module.ecs.ecs_cluster_name}-ecs-analytics-consumer"
-  policy_name        = var.policy_name
 
 }
 

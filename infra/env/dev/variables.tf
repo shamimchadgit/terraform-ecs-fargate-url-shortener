@@ -11,6 +11,7 @@ variable "bucket_name" {
   default     = "tf-state-url-short-kafka-26"
 }
 
+
 # Kafka 
 
 variable "kafka_instance_type" {
@@ -32,11 +33,6 @@ variable "cluster_name" {
   description = "the setup name of my cluster I want to re-use"
 }
 
-variable "subnets" {
-  type = list(string)
-}
-
-
 # ECS
 
 variable "dynamodb_table_name" {
@@ -48,12 +44,7 @@ variable "repo_name" {
 }
 
 variable "policy_arn" {
-  type    = string
-  default = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-variable "service_sg_ids" {
-  type = list(string)
+  type = string
 }
 
 # Code Deploy
@@ -73,11 +64,6 @@ variable "green_target_group_name" {
   description = "Name of green target group"
 }
 
-variable "ecr_repo_arn" {
-  type        = string
-  description = "ARN of the ECR repo GitHub Actions will push to"
-}
-
 variable "cidr" {
   type        = string
   description = "CIDR block for my VPC"
@@ -93,21 +79,8 @@ variable "private_subnets_cidr" {
   description = "CIDR blocks for my 2 private subnets"
 }
 
-variable "domain_validation_options" {
-  description = "ACM domain validation options"
-  type = list(object({
-    domain_name           = string
-    resource_record_name  = string
-    resource_record_type  = string
-    resource_record_value = string
-  }))
-}
 
 # ECS / ECR
-variable "app_image_repo_name" {
-  type        = string
-  description = "ECR repository name for producer app"
-}
 
 variable "consumer_repo_name" {
   type        = string
@@ -121,25 +94,28 @@ variable "github_repo" {
 }
 
 variable "private_dns_enabled" {
-    type = bool
-    default = true
+  type    = bool
+  default = true
 }
 
 variable "enable_dns_support" {
-    type = bool
-    default = true
+  type    = bool
+  default = true
 }
 
 variable "enable_dns_hostnames" {
-    type = bool
-    default = true
+  type    = bool
+  default = true
 }
 
 variable "ssl_policy" {
   type = string
 }
 
-variable "policy_name" {
+variable "s3_arn" {
   type = string
+}
 
+variable "kms_arn" {
+  type = string
 }

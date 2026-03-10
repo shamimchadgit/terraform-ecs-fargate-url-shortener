@@ -1,11 +1,11 @@
 # Task Exec
 output "ecs_task_execution_role_arn" {
-  value = aws_iam_role.task_execution.arn
+  value = module.ecs.ecs_task_execution_role_arn
 }
 
 # Task Role
 output "ecs_task_role_arn" {
-  value = aws_iam_role.task_role.arn
+  value = module.ecs.ecs_task_role_arn
 }
 
 output "kafka_bootstrap" {
@@ -14,8 +14,8 @@ output "kafka_bootstrap" {
 
 # Route53 nameservers for Cloudflare subdomain
 output "route53_name_servers" {
+  value       = module.route_53.name_servers
   description = "Nameservers for subdomain"
-  value       = module.route53.name_servers
 }
 
 # ALB DNS name (for testing)
@@ -45,25 +45,25 @@ output "consumer_service_name" {
 # CodeDeploy application name
 output "codedeploy_app_name" {
   description = "CodeDeploy application name"
-  value       = module.ecs_codedeploy.codedeploy_app_name
+  value       = module.codedeploy.codedeploy_app_name
 }
 
 # CodeDeploy deployment group name
 output "codedeploy_deployment_group" {
   description = "CodeDeploy deployment group name"
-  value       = module.ecs_codedeploy.codedeploy_deployment_group
+  value       = module.codedeploy.codedeploy_deployment_group
 }
 
 # Producer ECR repo URL
 output "producer_ecr_repo" {
   description = "ECR repository URL for producer app"
-  value       = module.ecr_producer.ecr_image_url
+  value       = module.ecr.ecr_image_url
 }
 
 # Consumer ECR repo URL
 output "consumer_ecr_repo" {
   description = "ECR repository URL for analytics consumer"
-  value       = module.ecr_consumer.consumer_image_url
+  value       = module.ecr.consumer_image_url
 }
 
 # GitHub OIDC role ARN
