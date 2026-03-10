@@ -44,7 +44,6 @@ variable "essential" {
 variable "image" {
     type = string
     description = "value"
-    default = "123456789012.dkr.ecr.eu-west-2.amazonaws.com/urlshortener:latest" #### Just a placeholder atm as haven't pushed to ECR yet
 }
 
 # Network config (subnets)
@@ -89,4 +88,8 @@ variable "container_port" {
 variable "table_name" {
     type = string
     description = "dynamodb table name"
+}
+
+variable "kafka_bootstrap" {
+    type = string
 }

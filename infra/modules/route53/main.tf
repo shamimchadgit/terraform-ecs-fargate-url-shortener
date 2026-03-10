@@ -1,14 +1,12 @@
-# Ref Existing Hosted Zone
-data "aws_route53_zone" "my_domain" {
-    name = var.domain_name
-    private_zone = var.private_zone
+# Using external registrar (Create HZ)
+resource "aws_route53_zone" "my_domain" {
+  name = var.domain_name
 }
-
 
 # Real DNS record
 
 resource "aws_route53_record" "alb_alias" {
-    zone_id = data.aws_route53_zone.my_domain.zone_id
+    zone_id = aws_route53_zone.my_domain.zone_id
     name = var.domain_name
     type = "A"
 
@@ -30,8 +28,8 @@ resource "aws_route53_record" "acm_validation" {
       record = dvo.resource_record_value
     }
   }
-
-  zone_id = data.aws_route53_zone.my_domain.zone_id
+  allow_overwrite = var.allow_overwrite
+  zone_id = aws_route53_zone.my_domain.zone_id
   name    = each.value.name
   type    = each.value.type
   records = [each.value.record]

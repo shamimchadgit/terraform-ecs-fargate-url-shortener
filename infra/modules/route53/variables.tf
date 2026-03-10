@@ -1,6 +1,6 @@
 variable "domain_name" {
     type = string
-    description = "The name of my domain created on AWS Route53"
+    description = "The name of my domain"
 }
 
 variable "private_zone" {
@@ -38,3 +38,8 @@ variable "evaluate_target_health" {
     default = true 
 }
 
+variable "allow_overwrite" {
+    description = ""
+    type = bool
+    default = true
+}

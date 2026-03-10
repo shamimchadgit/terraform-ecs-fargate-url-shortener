@@ -26,11 +26,18 @@ variable "repo_name" {
   
 }
 
-# ECR repo ARN
+# ECR repo ARN (Producer - app)
 
 variable "ecr_repo_arn" {
     type = string
-    description = "ARN of the ECR repo GitHub Actions will push to"
+    description = "ARN of the Producer ECR repo GitHub Actions will push to"
+}
+
+# ECR rep ARN (Consumer - analytics)
+variable "ecr_consumer_repo_arn" {
+    type = string
+    description = "ARN of the Consumer ECR repo GitHub Actions will push to"
+  
 }
 
 # ECS Task Execution ARN

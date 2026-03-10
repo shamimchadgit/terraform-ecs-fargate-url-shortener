@@ -90,7 +90,7 @@ resource "aws_lb_listener" "test_listener" {
     }
 }
 
-### We use blue tg arn as it is the intial active environment 
+### We use blue tg arn as it is the initial active environment 
 
 
 

@@ -52,54 +52,66 @@ resource "aws_ecs_cluster" "main" {
 
 # ECS Task Definition
 resource "aws_ecs_task_definition" "app" {
-  depends_on = [ # not needed but added to avoid eventual consistency issues in ECS/IAM
-        aws_iam_role_policy_attachment.execution_role,
-        aws_iam_role_policy.task_policy,
-        aws_cloudwatch_log_group.ecs,
-        aws_ssm_parameter.task_cpu,
-        aws_ssm_parameter.task_memory
-    ]
-  family                   = "${var.cluster_name}-task" # required
+
+  depends_on = [
+    aws_iam_role_policy_attachment.execution_role,
+    aws_iam_role_policy.task_policy,
+    aws_cloudwatch_log_group.ecs,
+    aws_ssm_parameter.task_cpu,
+    aws_ssm_parameter.task_memory
+  ]
+
+  family                   = "${var.cluster_name}-task"
   requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc" #give each task it's own ENI inside my VPC
-  cpu                      = data.aws_ssm_parameter.task_cpu.value # required for fargate
-  memory                   = data.aws_ssm_parameter.task_memory.value # required for Fargate
-  execution_role_arn = aws_iam_role.task_execution.arn # hook IAM execution role arn
-  task_role_arn = aws_iam_role.task_role.arn # hook IAM task role arn
-  
-  container_definitions = jsonencode( #required - converts HCL object (what i wrote above) to JSN for AWS to consume 
-  [
-  {
-    name = var.container_name
-    image = var.image
-    cpu = tonumber(data.aws_ssm_parameter.task_cpu.value)
-    memory = tonumber(data.aws_ssm_parameter.task_memory.value)
-    essential = var.essential
-    
-    portMappings = [{
-        containerPort = var.container_port
-        hostPort = var.container_port
-        protocol = "tcp"
+  network_mode             = "awsvpc"
+
+  cpu    = data.aws_ssm_parameter.task_cpu.value
+  memory = data.aws_ssm_parameter.task_memory.value
+
+  execution_role_arn = aws_iam_role.task_execution.arn
+  task_role_arn      = aws_iam_role.task_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = var.container_name
+      image     = var.image
+      cpu       = tonumber(data.aws_ssm_parameter.task_cpu.value)
+      memory    = tonumber(data.aws_ssm_parameter.task_memory.value)
+      essential = var.essential
+
+      portMappings = [
+        {
+          containerPort = var.container_port
+          hostPort      = var.container_port
+          protocol      = "tcp"
+        }
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/${var.cluster_name}"
+          awslogs-region        = data.aws_region.current.id
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+
+      environment = [
+        {
+          name  = "KAFKA_BOOTSTRAP"
+          value = var.kafka_bootstrap
+        },
+        {
+          name  = "TABLE_NAME"
+          value = var.table_name
+        },
+        {
+          name  = "AWS_REGION"
+          value = data.aws_region.current.id
+        }
+      ]
     }
-  ],
-  logConfiguration = {
-    logDriver = "awslogs"
-    options = {
-        awslogs-group = "/ecs/${var.cluster_name}"
-        awslogs-region = data.aws_region.current.id
-        awslogs-stream-prefix = "ecs"
-    }
-  },
-  environment = [{
-    name = "TABLE_NAME"
-    value = var.table_name
-  },
-  {
-    name = "AWS_REGION"
-    value = data.aws_region.current.id
-  }]
-  }
-])
+  ])
 }
 
 data "aws_region" "current" {} # avoid hardcoding region

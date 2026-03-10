@@ -10,13 +10,6 @@ variable "service_name" {
     description = "name of ECS service"
 }
 
-# Code Deploy
-
-variable "codedeploy_role_arn" {
-    type = string
-    description = "IAM role codedeploy uses to act on my behalf"
-}
-
 # ALB
 
 variable "alb_listener_arn" {

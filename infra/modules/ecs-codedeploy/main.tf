@@ -5,9 +5,9 @@ resource "aws_codedeploy_app" "url_shortener_app" {
 
 resource "aws_codedeploy_deployment_group" "ecs_deploy_group" { # deployment rules
     app_name = aws_codedeploy_app.url_shortener_app.name
-    deployment_config_name = "CodeDeployDefault.ECSAllAtOnce" # how tr shifts between b & g
+    deployment_config_name = "CodeDeployDefault.ECSCanary10Percent5Minutes" # how tr shifts between b & g (canary)
     deployment_group_name = "${var.cluster_name}-cd-group" # name of the environment 
-    service_role_arn = var.codedeploy_role_arn # IAM role CodeDeploy uses to act on my behalf 
+    service_role_arn = aws_iam_role.codedeploy_role.arn # IAM role CodeDeploy uses to act on my behalf 
 
     blue_green_deployment_config { # extra rules for b & g deployments 
       deployment_ready_option {
@@ -26,7 +26,7 @@ resource "aws_codedeploy_deployment_group" "ecs_deploy_group" { # deployment rul
       cluster_name = var.cluster_name
       service_name = var.service_name
     }
-### Need to check this part properly as not sure what to do with the test_traffic_route 
+
     load_balancer_info {
       target_group_pair_info {
         prod_traffic_route {
@@ -43,4 +43,24 @@ resource "aws_codedeploy_deployment_group" "ecs_deploy_group" { # deployment rul
         }
       }
     }   
+}
+
+resource "aws_iam_role" "codedeploy_role" {
+  name = "url-shortener-codedeploy-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "codedeploy.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "codedeploy_attach" {
+  role = aws_iam_role.codedeploy_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"  
 }

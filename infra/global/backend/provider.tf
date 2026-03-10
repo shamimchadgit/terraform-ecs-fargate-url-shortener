@@ -10,5 +10,5 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region ### change to var.region and store value in tfvars file
+  region = var.aws_region
 }

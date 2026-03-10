@@ -13,3 +13,10 @@
    type = string
    default = "url_shortener_app"
  }
+
+ variable "consumer_repo_name" {
+   type = string
+   default = "analytics-consumer"
+ }
+
+  

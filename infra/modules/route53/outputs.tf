@@ -9,3 +9,7 @@ output "acm_validation_fqdns" {
         r.fqdn
     ]
 }
+
+output "name_servers" {
+    value = aws_route53_zone.my_domain.name_servers
+}

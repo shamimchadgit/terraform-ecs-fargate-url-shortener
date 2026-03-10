@@ -206,7 +206,7 @@ resource "aws_security_group" "alb_sg" {
   }
 }
 
-# Security Group for ECS 
+# Security Group for ECS (Producer - App)
 
 resource "aws_security_group" "ecs_sg" {
     name = var.ecs_sg_name
@@ -232,4 +232,50 @@ resource "aws_security_group" "ecs_sg" {
     tags = {
       Name = "ecs_sg"
     }
+}
+
+resource "aws_security_group" "consumer_sg" {
+  name = var.consumer_sg_name
+  description = "Security group for ECS Consumer"
+  vpc_id = aws_vpc.main.id
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "ecs-consumer-sg"
+  }
+}
+
+# Kafka Security Group 
+
+resource "aws_security_group" "kafka_sg" {
+    name = var.kafka_sg_name
+    description = "Allow kafka traffic from ECs"
+    vpc_id = aws_vpc.main.id
+
+    ingress {
+      from_port = var.kafka_port
+      to_port = var.kafka_port
+      protocol = "tcp"
+      security_groups = [aws_security_group.ecs_sg.id]
+    }
+
+    ingress {
+      from_port = var.kafka_port
+      to_port = var.kafka_port
+      protocol = "tcp"
+      security_groups = [aws_security_group.consumer_sg.id]
+   }
+
+    egress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    } # EC2 needs to communicate with S3 to pull .tar file during user data script startup
 }

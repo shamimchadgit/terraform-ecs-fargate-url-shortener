@@ -51,3 +51,24 @@ variable "ecs_container_port" {
     description = "the incoming traffic the ECS container listens on"
     default = 8080
 }
+
+# SG for Consumer ECS
+
+variable "consumer_sg_name" {
+    type = string
+    description = "Name of the ECS Consumer security group"
+    default = "ecs-consumer-sg"
+}
+
+# SG for EC2 (Kafka Broker)
+
+variable "kafka_sg_name" {
+    type = string
+    description = "Name of the EC2 Kafka Broker security group"
+    default = "kafka-sg"
+}
+
+variable "kafka_port" {
+    type = number
+    default = 9092
+}

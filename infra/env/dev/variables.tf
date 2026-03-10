@@ -14,7 +14,7 @@ variable "bucket_name" {
 variable "domain_name" {
   type        = string
   description = ""
-  default     = "example.com" ### replace with actual route53 domain
+  default     = "dev.shamimchaudhury.uk"
 }
 
 variable "validation_record_fqdns" {
