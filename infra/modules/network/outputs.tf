@@ -39,3 +39,7 @@ output "ecs_consumer_sg_id" {
     value = aws_security_group.consumer_sg.id
   
 }
+
+output "kafka_sg_id" {
+    value = aws_security_group.kafka_sg.id
+}

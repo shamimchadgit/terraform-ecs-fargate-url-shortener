@@ -15,3 +15,8 @@ variable "public_ip" {
 variable "kafka_assets_s3_bucket" {
     type = string
 }
+
+variable "security_group_ids" {
+    type = list(string)
+  
+}

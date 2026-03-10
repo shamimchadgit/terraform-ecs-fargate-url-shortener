@@ -12,7 +12,7 @@ resource "aws_ecr_repository" "url_shortener_app" {
 }
 
 resource "aws_ecr_repository" "analytics_consumer" {
-    name = var.repo_name
+    name = var.consumer_repo_name
     image_tag_mutability = "MUTABLE"
     encryption_configuration {
       encryption_type = "KMS"
@@ -57,7 +57,7 @@ resource "aws_ecr_lifecycle_policy" "lifecycle" {
 }
 
 resource "aws_ecr_lifecycle_policy" "consumer" {
-    repository = aws_ecr_repository.analytics-consumer.name
+    repository = aws_ecr_repository.analytics_consumer.name
     policy = jsonencode({
         rules = [
             {

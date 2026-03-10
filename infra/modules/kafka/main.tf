@@ -2,13 +2,22 @@
 
 data "aws_ami" "amazon_linux_2023" {
     most_recent = true 
-    owners = ["137112412989"]
+    owners = ["amazon"]
 
     filter {
       name = "name"
-      values = ["amazon-linux-2023-ami-*-x86_64-gp3"]
+      values = ["al2023-ami-*-x86_64"]
     }
-  
+
+    filter {
+      name = "architecture"
+      values = ["x86_64"]
+    }
+
+    filter {
+      name = "virtualization-type"
+      values = ["hvm"]
+    }
 }
 
 # EC2 Instance 
@@ -17,7 +26,7 @@ resource "aws_instance" "kafka_broker" {
     ami = data.aws_ami.amazon_linux_2023.id
     instance_type = var.instance_type
     subnet_id = var.private_sub_id
-    vpc_security_group_ids = [aws_security_group.kafka_sg.id]
+    vpc_security_group_ids = var.security_group_ids
     iam_instance_profile = aws_iam_instance_profile.kafka_profile.name
     associate_public_ip_address = var.public_ip
 

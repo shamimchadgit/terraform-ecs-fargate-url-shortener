@@ -11,5 +11,5 @@ output "ecr_image_url" {
 }
 
 output "consumer_image_url" {
-    value = aws_ecr_repository.analytics-consumer.repository_url
+    value = aws_ecr_repository.analytics_consumer.repository_url
 }
