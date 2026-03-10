@@ -1,5 +1,5 @@
 aws_region = "eu-west-2"
-bucket_name = "ecs-fargate-bucket-26"
+bucket_name = "tf-state-url-short-kafka-26"
 domain_name = "dev.shamimchaudhury.uk"
 cluster_name = "url-shortener"
 service_name = "url-shortener-cluster-svc" 

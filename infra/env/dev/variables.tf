@@ -3,10 +3,12 @@ variable "aws_region" {
     description = "AWS region for resources in the backend"
 }
 
+# S3
+
 variable "bucket_name" {
     type = string
     description = "Name of the S3 bucket used for state-file"
-    default = "ecs-fargate-bucket-26"
+    default = "tf-state-url-short-kafka-26"
 }
 
 # ACM 
