@@ -21,9 +21,7 @@ variable "client_id_list" {
 
 variable "repo_name" {
     type = string
-    description = ""
-    default = "repo:your-org/your-repo:*" ### replace w/ actual repo
-  
+    description = "my github repo"
 }
 
 # ECR repo ARN (Producer - app)

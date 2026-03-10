@@ -17,7 +17,7 @@ module "ecr" {
   latest_img         = 5
   untagged_count_num = 10
   repo_name          = var.repo_name
-  consumer_repo_name = var.consumer_image_repo_name
+  consumer_repo_name = var.consumer_repo_name
 }
 
 # DynamoDB Table 
@@ -102,6 +102,7 @@ module "iam_github_oidc" {
   s3_arn                      = data.aws_s3_bucket.backend_bucket.arn
   kms_arn                     = module.backend.kms_arn
   ecr_consumer_repo_arn       = module.ecr.ecr_consumer_repo_arn
+  repo_name = var.repo_name
 }
 
 data "aws_s3_bucket" "backend_bucket" {

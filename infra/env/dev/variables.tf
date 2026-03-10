@@ -26,12 +26,6 @@ variable "domain_name" {
   description = "Domain name"
 }
 
-# ALB
-
-variable "certificate_arn" {
-  type        = string
-  description = "ACM cert ARN for HTTPS listener"
-}
 
 variable "cluster_name" {
   type        = string
@@ -42,24 +36,11 @@ variable "subnets" {
   type = list(string)
 }
 
-variable "vpc_id" {
-  type = string
-}
-
-variable "alb_sg_id" {
-  description = "security group ID for the ALB"
-  type        = string
-}
 
 # ECS
 
 variable "dynamodb_table_name" {
   type = string
-}
-
-variable "dynamodb_table_arn" {
-  type        = string
-  description = "Dynamodb table ARN for ECS to locate the resource"
 }
 
 variable "repo_name" {
@@ -71,11 +52,6 @@ variable "policy_arn" {
   default = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-variable "target_group_arn" {
-  type        = string
-  description = "ARN of the Load Balancer target group to associate with the service."
-}
-
 variable "service_sg_ids" {
   type = list(string)
 }
@@ -85,21 +61,6 @@ variable "service_sg_ids" {
 variable "service_name" {
   type        = string
   description = "name of ECS service"
-}
-
-variable "codedeploy_role_arn" {
-  type        = string
-  description = "IAM role codedeploy uses to act on my behalf"
-}
-
-variable "alb_listener_arn" {
-  type        = string
-  description = "ARN for alb listener"
-}
-
-variable "alb_test_listener_arn" {
-  type        = string
-  description = "ARN for the alb test listener"
 }
 
 variable "blue_target_group_name" {
@@ -115,24 +76,6 @@ variable "green_target_group_name" {
 variable "ecr_repo_arn" {
   type        = string
   description = "ARN of the ECR repo GitHub Actions will push to"
-}
-
-variable "ecs_task_execution_role_arn" {
-  type        = string
-  description = ""
-}
-
-variable "ecs_task_role_arn" {
-  type        = string
-  description = ""
-}
-
-variable "s3_arn" {
-  type = string
-}
-
-variable "kms_arn" {
-  type = string
 }
 
 variable "cidr" {
@@ -160,28 +103,13 @@ variable "domain_validation_options" {
   }))
 }
 
-variable "alb_dns_name" {
-  description = ""
-  type        = string
-}
-
-variable "alb_zone_id" {
-  description = ""
-  type        = string
-}
-
-variable "alb_arn" {
-  type        = string
-  description = "ARN of the ALB to attach this WAF to"
-}
-
 # ECS / ECR
 variable "app_image_repo_name" {
   type        = string
   description = "ECR repository name for producer app"
 }
 
-variable "consumer_image_repo_name" {
+variable "consumer_repo_name" {
   type        = string
   description = "ECR repository name for analytics consumer"
 }
@@ -193,19 +121,19 @@ variable "github_repo" {
 }
 
 variable "private_dns_enabled" {
-
+    type = bool
+    default = true
 }
 
 variable "enable_dns_support" {
-
+    type = bool
+    default = true
 }
 
 variable "enable_dns_hostnames" {
-
+    type = bool
+    default = true
 }
-
-
-
 
 variable "ssl_policy" {
   type = string
