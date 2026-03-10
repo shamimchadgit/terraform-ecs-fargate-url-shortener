@@ -61,7 +61,7 @@ resource "aws_iam_policy" "github_ecr_policy" {
           "ecr:CompleteLayerUpload",
           "ecr:DescribeRepositories"
         ],
-        Resource = [var.ecr_repo_arn]
+        Resource = [var.ecr_repo_arn, var.ecr_consumer_repo_arn ]
       },
       {
         Effect = "Allow",
