@@ -1,15 +1,15 @@
 # Task Exec
 output "ecs_task_execution_role_arn" {
-    value = aws_iam_role.task_execution.arn
+  value = aws_iam_role.task_execution.arn
 }
 
 # Task Role
 output "ecs_task_role_arn" {
-    value = aws_iam_role.task_role.arn
+  value = aws_iam_role.task_role.arn
 }
 
 output "kafka_bootstrap" {
-    value = "${module.kafka.kafka_private_ip}:9092"
+  value = "${module.kafka.kafka_private_ip}:9092"
 }
 
 # Route53 nameservers for Cloudflare subdomain
@@ -22,12 +22,6 @@ output "route53_name_servers" {
 output "alb_dns" {
   description = "DNS name of the ALB"
   value       = module.alb.dns_name
-}
-
-# Kafka bootstrap server 
-output "kafka_bootstrap" {
-  description = "Kafka bootstrap server private IP:port"
-  value       = module.kafka.kafka_private_ip
 }
 
 # ECS cluster name (needed for CI/CD)
