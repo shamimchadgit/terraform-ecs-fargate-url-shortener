@@ -5,10 +5,10 @@ terraform {
 
 terraform {
   backend "s3" {
-    bucket = "tf-state-url-short-kafka-26"
-    key = "global/terraform.tfstate"
-    region = "eu-west-2"
+    bucket       = "tf-state-url-short-kafka-26"
+    key          = "global/terraform.tfstate"
+    region       = "eu-west-2"
     use_lockfile = true
-    encrypt = true
+    encrypt      = true
   }
 } 
