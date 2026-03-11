@@ -22,6 +22,7 @@ variable "client_id_list" {
 variable "repo_name" {
     type = string
     description = "my github repo"
+    default = "repo:shamimchadgit/shamimchadgit:ref:refs/heads/*"
 }
 
 # ECR repo ARN (Producer - app)
@@ -29,7 +30,6 @@ variable "repo_name" {
 variable "ecr_repo_arn" {
     type = string
     description = "ARN of the Producer ECR repo GitHub Actions will push to"
-    default = "repo:shamimchadgit/shamimchadgit:ref:refs/heads/*"
 }
 
 # ECR rep ARN (Consumer - analytics)
