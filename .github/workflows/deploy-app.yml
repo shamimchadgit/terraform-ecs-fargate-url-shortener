@@ -112,10 +112,17 @@ jobs:
             
       - name: Trigger CodeDeploy
         run: |
+          APPSPEC_JSON_CONTENT=$(jq -Rs '.' src/appspec.yml)
+          echo "{
+            \"revisionType\": \"AppSpecContent\",
+            \"appSpecContent\": {
+              \"content\": $APPSPEC_JSON_CONTENT
+            }
+          }" > revision.json
+
           aws deploy create-deployment \
-          --application-name $CODEDEPLOY_APP \
-          --deployment-group-name $CODEDEPLOY_GROUP \
-          --revision "revisionType=AppSpecContent,appSpecContent={\"content\":\"$(cat appspec.yml | sed ':a;N;$!ba;s/\n/\\n/g')\"}"
-                
+            --application-name ${{ env.CODEDEPLOY_APP }} \
+            --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
+            --revision file://revision.json
         # appSpecContent JSON escapes newlines to avoid CLI fail
 

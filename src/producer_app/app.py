@@ -26,7 +26,7 @@ def delivery_report(err, msg):
     else:
         print(f"✅ Message delivered to {msg.topic()} [{msg.partition()}]")
 
-# Shutdown flush (gracefully )
+# Shutdown flush (gracefully)
 atexit.register(lambda: producer.flush())
 
 # FastAPI app
