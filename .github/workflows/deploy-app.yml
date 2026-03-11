@@ -86,20 +86,25 @@ jobs:
       - name: Register New Task Definition
         id: taskdef
         run: |
+          TASK_FAMILY="url-shortener-task"
+          
+          echo "Describing task definition for family: $TASK_FAMILY"
+
           TASK_DEF_JSON=$(aws ecs describe-task-definition \
-          --task-definition ${CLUSTER_NAME}-task)
+            --task-definition $TASK_FAMILY)
 
           NEW_TASK_DEF=$(echo $TASK_DEF_JSON | jq \
-          --arg IMAGE "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}" \
-          '.taskDefinition
-          | del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy)
-          | .containerDefinitions[0].image = $IMAGE')
+            --arg IMAGE "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}" \
+            '.taskDefinition
+            | del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy)
+            | .containerDefinitions[0].image = $IMAGE')
 
           TASK_DEF_ARN=$(echo $NEW_TASK_DEF | aws ecs register-task-definition \
-          --cli-input-json file:///dev/stdin \
-          --query 'taskDefinition.taskDefinitionArn' \
-          --output text)
+            --cli-input-json file:///dev/stdin \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
 
+          echo "Successfully registered revision: $TASK_DEF_ARN"
           echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
 
       - name: Replace AppSpec Placeholder
