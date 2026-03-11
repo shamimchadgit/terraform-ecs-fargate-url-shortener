@@ -8,16 +8,16 @@ on:
       - "!src/analytics-consumer/**"
 
 permissions:
-    id-token: write
-    contents: read 
+  id-token: write
+  contents: read 
 
 env: 
-    AWS_REGION: ${{ secrets.AWS_REGION }} 
-    ECR_REPO: ${{ secrets.ECR_REPO }} 
-    CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }} 
-    SERVICE_NAME: ${{ secrets.SERVICE_NAME }} 
-    CODEDEPLOY_APP: ${{ secrets.CODEDEPLOY_APP }} 
-    CODEDEPLOY_GROUP: ${{ secrets.CODEDEPLOY_GROUP }} 
+  AWS_REGION: ${{ secrets.AWS_REGION }} 
+  ECR_REPO: ${{ secrets.ECR_REPO }} 
+  CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }} 
+  SERVICE_NAME: ${{ secrets.SERVICE_NAME }} 
+  CODEDEPLOY_APP: ${{ secrets.CODEDEPLOY_APP }} 
+  CODEDEPLOY_GROUP: ${{ secrets.CODEDEPLOY_GROUP }} 
 
 jobs:
   check-infra:
