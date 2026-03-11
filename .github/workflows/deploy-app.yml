@@ -113,6 +113,7 @@ jobs:
       - name: Trigger CodeDeploy
         run: |
           APPSPEC_JSON_CONTENT=$(jq -Rs '.' src/appspec.yml)
+          
           echo "{
             \"revisionType\": \"AppSpecContent\",
             \"appSpecContent\": {
@@ -121,7 +122,7 @@ jobs:
           }" > revision.json
 
           aws deploy create-deployment \
-            --application-name ${{ env.CODEDEPLOY_APP }} \
+            --application-name "url-shortener-app" \
             --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
             --revision file://revision.json
         # appSpecContent JSON escapes newlines to avoid CLI fail
