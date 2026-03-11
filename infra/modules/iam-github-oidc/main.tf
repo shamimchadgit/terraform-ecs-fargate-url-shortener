@@ -118,7 +118,7 @@ resource "aws_iam_policy" "s3_policy" {
       {
         Effect = "Allow",
         Action = [ "s3:ListBucket" ],
-        Resource = [var.s3_arn]
+        Resource = var.s3_arn
       },
       {
         Effect = "Allow",
@@ -137,7 +137,7 @@ resource "aws_iam_policy" "s3_policy" {
           "kms:GenerateDataKey",
           "kms:DescribeKey"
         ],
-        Resource = [var.kms_arn]
+        Resource = var.kms_arn
       }
     ]
   })

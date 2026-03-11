@@ -12,6 +12,7 @@ permissions:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
+  KAFKA_ASSETS_BUCKET: "my-kafka-assets-dev"
 
 jobs:
   apply:
