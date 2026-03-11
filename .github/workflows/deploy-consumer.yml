@@ -78,22 +78,28 @@ jobs:
             
       - name: Update ECS Service
         run: |
-          TASK_DEF_JSON=$(aws ecs describe-task-definition \
-          --task-definition analytics-consumer)
+          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_CONSUMER}:${IMAGE_TAG}"
+          
+          echo "Fetching current task definition for: analytics-consumer"
 
-          NEW_TASK_DEF=$(echo $TASK_DEF_JSON | jq \
-          --arg IMAGE "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_CONSUMER}:${IMAGE_TAG}" \
-          '.taskDefinition
-          | del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy)
-          | .containerDefinitions[0].image = $IMAGE')
+          aws ecs describe-task-definition \
+            --task-definition analytics-consumer \
+            --query 'taskDefinition' > task-def.json
 
-          TASK_DEF_ARN=$(echo $NEW_TASK_DEF | aws ecs register-task-definition \
-          --cli-input-json file:///dev/stdin \
-          --query 'taskDefinition.taskDefinitionArn' \
-          --output text)
+          jq --arg IMAGE "$IMAGE_URI" \
+            'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy) 
+            | .containerDefinitions[0].image = $IMAGE' \
+            task-def.json > clean-task-def.json
+
+          TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://clean-task-def.json \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+          echo "Registered new Task Def: $TASK_DEF_ARN"
 
           aws ecs update-service \
-            --cluster $CLUSTER_NAME \
-            --service $SERVICE_NAME_CONSUMER \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --service ${{ env.SERVICE_NAME_CONSUMER }} \
             --task-definition $TASK_DEF_ARN
             

@@ -37,7 +37,7 @@ try:
     
         print("Processing event:", event)
     
-# Increment click count
+#Increment click count
         table.update_item(
             Key={"short_url": short_code},
             UpdateExpression="ADD click_count :inc",
