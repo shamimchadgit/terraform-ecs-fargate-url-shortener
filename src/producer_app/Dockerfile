@@ -10,11 +10,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+
 # Dependencies 
 COPY requirements.txt .
 
-RUN python3 -m pip install --no-cache-dir --upgrade pip==26.0.1 \
-    && python3 -m pip install --no-cache-dir -r requirements.txt
+RUN python3 -m pip install --no-cache-dir -r requirements.txt
 
 ### Run-time Stage
 FROM python:3.12-slim
@@ -22,8 +24,7 @@ FROM python:3.12-slim
 WORKDIR /app
 
 #Installed dependencies from builder
-COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
-COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /root/.local /home/appuser/.local
 
 #my app code
 COPY . .
@@ -32,6 +33,8 @@ COPY . .
 #Security (run as non-root)
 RUN useradd -m appuser
 USER appuser
+
+ENV PATH=/home/appuser/.local/bin:$PATH
 
 EXPOSE 8080
 
