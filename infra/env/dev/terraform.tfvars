@@ -13,7 +13,7 @@ github_repo             = "shamimchadgit/terraform-ecs-fargate-url-shortener-kaf
 ssl_policy              = "ELBSecurityPolicy-TLS-1-2-2017-01"
 blue_target_group_name  = "url-shortener-tg-blue"
 green_target_group_name = "url-shortener-tg-green"
-policy_arn              = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+policy_arn              = "arn:aws:s3:::url-shortener-kafka-assets-dev"
 s3_arn                  = "arn:aws:s3:::tf-state-url-short-kafka-26"
 kms_arn                 = "arn:aws:kms:eu-west-2:317006682416:key/ac300053-5b53-49fd-a318-2f4e8687a445"
 
