@@ -22,7 +22,7 @@ COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 #my app code
-COPY src/consumer.py/ .
+COPY src/analytics_consumer/consumer.py .
 
 #Security (run as non-root)
 RUN useradd -m appuser
