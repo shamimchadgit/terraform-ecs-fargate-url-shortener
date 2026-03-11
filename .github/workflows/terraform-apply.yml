@@ -19,13 +19,16 @@ jobs:
         
     steps:
       - uses: actions/checkout@v4
-        with:
-            lfs: true
-
+        
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Download Kafka Tarball
+        run: |
+          mkdir -p assets
+          aws s3 cp s3://my-kafka-bucket/kafka_2.13-4.2.0.tgz assets/
             
       - uses: hashicorp/setup-terraform@v3
 
