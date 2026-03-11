@@ -17,13 +17,7 @@ variable "client_id_list" {
     default = "sts.amazonaws.com"
   
 }
-# repo name
 
-variable "repo_name" {
-    type = string
-    description = "my github repo"
-    default = "repo:shamimchadgit/shamimchadgit:ref:refs/heads/*"
-}
 
 # ECR repo ARN (Producer - app)
 
