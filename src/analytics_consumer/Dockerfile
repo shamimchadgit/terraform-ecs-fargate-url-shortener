@@ -3,9 +3,9 @@ FROM python:3.12-slim AS builder
 
 WORKDIR /app
 # Dependencies 
-COPY requirements.txt .
-
 RUN apt-get update && apt-get install -y gcc librdkafka-dev
+
+COPY src/analytics_consumer/requirements.txt .
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip \
     && python3 -m pip install --no-cache-dir -r requirements.txt
@@ -22,7 +22,7 @@ COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 #my app code
-COPY consumer.py .
+COPY src/consumer.py/ .
 
 #Security (run as non-root)
 RUN useradd -m appuser
