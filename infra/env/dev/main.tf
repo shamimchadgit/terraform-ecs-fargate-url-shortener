@@ -100,7 +100,6 @@ module "iam_github_oidc" {
   ecs_task_execution_role_arn = module.ecs.ecs_task_execution_role_arn
   ecs_task_role_arn           = module.ecs.ecs_task_role_arn
   ecr_consumer_repo_arn       = module.ecr.ecr_consumer_repo_arn
-  repo_name                   = var.repo_name
 
   s3_arn  = var.s3_arn
   kms_arn = var.kms_arn
