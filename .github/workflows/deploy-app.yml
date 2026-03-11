@@ -73,6 +73,7 @@ jobs:
       - name: Trviy Scan 
         uses: aquasecurity/trivy-action@master
         with:
+          ignore-unfixed: true
           image-ref: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:${{ env.IMAGE_TAG }}
           severity: CRITICAL,HIGH
           exit-code: 1

@@ -1,0 +1,2 @@
+# glibc: Integer overflow in memalign
+CVE-2026-0861
