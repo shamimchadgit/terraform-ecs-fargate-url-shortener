@@ -2,6 +2,14 @@
 FROM python:3.12-slim AS builder
 
 WORKDIR /app
+# build dependencies (to stop error on slim image)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    libffi-dev \
+    libssl-dev \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
 # Dependencies 
 COPY requirements.txt .
 
