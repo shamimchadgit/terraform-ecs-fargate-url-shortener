@@ -78,3 +78,27 @@ resource "aws_iam_instance_profile" "kafka_profile" {
     name = "kafka-profile"
     role = aws_iam_role.kafka_role.name
 }
+
+# EBS for persistent volume 
+
+resource "aws_ebs_volume" "kafka_data" {
+    availability_zone = aws_instance.kafka_broker.availability_zone
+    size = 100
+    type = "gp3"
+
+    encrypted = true
+    final_snapshot = true
+
+    tags = {
+      Name = "kafka-data"
+      Project = "url-shortener"
+    }
+}
+
+# Attach volume to EC2 (Kafka)
+
+resource "aws_volume_attachment" "kafka_data_attach" {
+    device_name = "/dev/sdf" # recommended on aws docs
+    volume_id = aws_ebs_volume.kafka_data.id
+    instance_id = aws_instance.kafka_broker.id
+}

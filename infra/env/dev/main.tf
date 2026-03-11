@@ -100,7 +100,7 @@ module "iam_github_oidc" {
   ecs_task_execution_role_arn = module.ecs.ecs_task_execution_role_arn
   ecs_task_role_arn           = module.ecs.ecs_task_role_arn
   ecr_consumer_repo_arn       = module.ecr.ecr_consumer_repo_arn
-  ecs_consumer_task_role_arn = module.ecs_consumer.ecs_task_role_arn
+  ecs_consumer_task_role_arn  = module.ecs_consumer.ecs_task_role_arn
 
   s3_arn  = var.s3_arn
   kms_arn = var.kms_arn
@@ -137,7 +137,7 @@ module "ecs_consumer" {
 }
 
 resource "aws_s3_bucket" "kafka_assets" {
-  bucket = "url-shortener-kafka-assets-dev"
+  bucket        = "url-shortener-kafka-assets-dev"
   force_destroy = true
 }
 

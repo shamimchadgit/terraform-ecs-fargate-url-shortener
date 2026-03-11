@@ -8,5 +8,5 @@ output "consumer_service_name" {
 # Task Execution
 
 output "ecs_task_role_arn" {
-    value = aws_iam_role.consumer_task_role
+    value = aws_iam_role.consumer_task_role.arn
 }
