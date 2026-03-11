@@ -108,7 +108,7 @@ jobs:
 
       - name: Replace AppSpec Placeholder
         run: |
-          sed -i "s|__TASK_DEF_ARN__|${TASK_DEF_ARN}|g" appspec.yml
+          sed -i "s|__TASK_DEF_ARN__|${TASK_DEF_ARN}|g" src/appspec.yml
             
       - name: Trigger CodeDeploy
         run: |
