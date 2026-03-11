@@ -78,7 +78,9 @@ resource "aws_iam_policy" "github_ecr_policy" {
         Action = "iam:PassRole",
         Resource = [
           var.ecs_task_execution_role_arn,
-          var.ecs_task_role_arn
+          var.ecs_task_role_arn,
+          var.ecs_consumer_task_role_arn
+
         ]
       },
       {
