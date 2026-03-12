@@ -27,8 +27,8 @@ jobs:
     
       - name: Prepare Kafka Tarball
         run: |
-          mkdir -p ../../../assets
-          aws s3 cp s3://${{ env.KAFKA_ASSETS_BUCKET }}/kafka_2.13-4.2.0.tgz ../../../assets/
+          mkdir -p assets
+          aws s3 cp s3://${{ env.KAFKA_ASSETS_BUCKET }}/kafka_2.13-4.2.0.tgz assets/
     
       - uses: hashicorp/setup-terraform@v3
             
