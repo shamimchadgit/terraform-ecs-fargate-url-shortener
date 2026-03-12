@@ -24,7 +24,9 @@ data "aws_iam_policy_document" "github_assume_role" {
       condition {
         test = "StringLike"
         variable = "token.actions.githubusercontent.com:sub"
-        values = ["repo:shamimchadgit/terraform-ecs-fargate-url-shortener-kafka:ref:refs/heads/*"]
+        values = ["repo:shamimchadgit/terraform-ecs-fargate-url-shortener-kafka:ref:refs/heads/*",
+        "repo:shamimchadgit/terraform-ecs-fargate-url-shortener-kafka:pull_request"
+        ]
       }
     }
 }
