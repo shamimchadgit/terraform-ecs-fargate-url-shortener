@@ -160,3 +160,11 @@ resource "aws_iam_role_policy_attachment" "tf_state" {
   role = aws_iam_role.github_actions.name
   policy_arn = aws_iam_policy.s3_policy.arn
 }
+
+# Admin Permissions for Terraform Apply
+
+resource "aws_iam_role_policy_attachment" "terraform_admin" {
+  role = aws_iam_role.github_actions.name
+  policy_arn = var.admin_policy_arn
+  
+}

@@ -62,3 +62,7 @@ variable "ecs_consumer_task_role_arn" {
 variable "s3_assets_arn" {
     type = string
 }
+
+variable "admin_policy_arn" {
+    type = string
+}

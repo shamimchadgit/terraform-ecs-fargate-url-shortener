@@ -117,9 +117,13 @@ variable "s3_arn" {
 }
 
 variable "s3_assets_arn" {
-    type = string
+  type = string
 }
 
 variable "kms_arn" {
   type = string
+}
+
+variable "admin_policy_arn" {
+    type = string
 }
