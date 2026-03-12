@@ -113,6 +113,8 @@ jobs:
       - name: Trigger CodeDeploy
         run: |
           APPSPEC_JSON_CONTENT=$(jq -Rs '.' src/appspec.yml)
+
+          cat clean-task-def.json
           
           echo "{
             \"revisionType\": \"AppSpecContent\",
