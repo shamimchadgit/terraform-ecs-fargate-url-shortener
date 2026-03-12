@@ -58,3 +58,7 @@ variable "kms_arn" {
 variable "ecs_consumer_task_role_arn" {
     type = string
 }
+
+variable "s3_assets_arn" {
+    type = string
+}

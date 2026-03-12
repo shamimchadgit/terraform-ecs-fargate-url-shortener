@@ -15,6 +15,7 @@ blue_target_group_name  = "url-shortener-tg-blue"
 green_target_group_name = "url-shortener-tg-green"
 policy_arn              = "arn:aws:s3:::url-shortener-kafka-assets-dev"
 s3_arn                  = "arn:aws:s3:::tf-state-url-short-kafka-26"
+s3_assets_arn = "arn:aws:s3:::url-shortener-kafka-assets-dev"
 kms_arn                 = "arn:aws:kms:eu-west-2:317006682416:key/ac300053-5b53-49fd-a318-2f4e8687a445"
 
 

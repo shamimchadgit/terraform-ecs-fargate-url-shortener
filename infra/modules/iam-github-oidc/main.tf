@@ -118,7 +118,9 @@ resource "aws_iam_policy" "s3_policy" {
       {
         Effect = "Allow",
         Action = [ "s3:ListBucket" ],
-        Resource = var.s3_arn
+        Resource = [var.s3_arn,
+        var.s3_assets_arn
+        ]
       },
       {
         Effect = "Allow",
@@ -127,7 +129,9 @@ resource "aws_iam_policy" "s3_policy" {
           "s3:PutObject",
           "s3:DeleteObject"
         ],
-        Resource = "${var.s3_arn}/*"
+        Resource = ["${var.s3_arn}/*", 
+        "${var.s3_assets_arn}/*"
+        ]
       },
       {
         Effect = "Allow",

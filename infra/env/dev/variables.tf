@@ -114,7 +114,10 @@ variable "ssl_policy" {
 
 variable "s3_arn" {
   type = string
-  default = "arn:aws:s3:::url-shortener-kafka-assets-dev"
+}
+
+variable "s3_assets_arn" {
+    type = string
 }
 
 variable "kms_arn" {

@@ -103,6 +103,7 @@ module "iam_github_oidc" {
   ecs_consumer_task_role_arn  = module.ecs_consumer.ecs_task_role_arn
 
   s3_arn  = var.s3_arn
+  s3_assets_arn = var.s3_assets_arn
   kms_arn = var.kms_arn
 }
 
