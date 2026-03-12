@@ -3,6 +3,7 @@ name: terraform-plan
 on:
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -10,6 +11,7 @@ permissions:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
+  KAFKA_ASSETS_BUCKET: ${{ secrets.KAFKA_ASSETS_BUCKET }}
 
 jobs:
   plan:
@@ -22,7 +24,12 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
-            
+    
+      - name: Prepare Kafka Tarball
+        run: |
+          mkidr -p ../../../assets
+          aws s3 cp s3://${{ env.KAFKA_ASSETS_BUCKET }}/kafka_2.13-4.2.0.tgz ../../../assets/
+    
       - uses: hashicorp/setup-terraform@v3
             
       - name: Terraform Init & Plan
