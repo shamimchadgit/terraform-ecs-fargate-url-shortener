@@ -22,3 +22,8 @@ output "ecs_task_execution_role_arn" {
 output "ecs_task_role_arn" {
     value = aws_iam_role.task_role.arn
 }
+
+output "ecs_container_definitions" {
+    value = aws_ecs_task_definition.app.container_definitions
+  
+}
