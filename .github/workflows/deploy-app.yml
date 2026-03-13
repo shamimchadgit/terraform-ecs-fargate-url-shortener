@@ -68,7 +68,10 @@ jobs:
           docker build -t $ECR_REPO:$IMAGE_TAG -f src/producer_app/Dockerfile . 
           docker tag $ECR_REPO:$IMAGE_TAG \
             ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPO:$IMAGE_TAG
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          docker tag $ECR_REPO:$IMAGE_TAG \
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPO:latest
+          
+            echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
       - name: Trviy Scan 
         uses: aquasecurity/trivy-action@master
@@ -82,50 +85,46 @@ jobs:
         run: |
           docker push \
             ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:${IMAGE_TAG}
-            
+          docker push \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPO:latest
+  
       - name: Register New Task Definition
-        id: taskdef
         run: |
           TASK_FAMILY="url-shortener-task"
-          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
-          
-          echo "Fetching current task definition for: $TASK_FAMILY"
 
-          aws ecs describe-task-definition --task-definition $TASK_FAMILY --query 'taskDefinition' > task-def.json
+          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
+
+          aws ecs describe-task-definition \
+          --task-definition $TASK_FAMILY \
+          --query 'taskDefinition' > task-def.json
 
           jq --arg IMAGE "$IMAGE_URI" \
-            'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy) 
-            | .containerDefinitions[0].image = $IMAGE' \
-            task-def.json > clean-task-def.json
+          'del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy)
+          | .containerDefinitions[0].image=$IMAGE' \
+          task-def.json > clean-task-def.json
 
           TASK_DEF_ARN=$(aws ecs register-task-definition \
-            --cli-input-json file://clean-task-def.json \
-            --query 'taskDefinition.taskDefinitionArn' \
-            --output text)
+          --cli-input-json file://clean-task-def.json \
+          --query 'taskDefinition.taskDefinitionArn' \
+          --output text)
 
           echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
-          echo "Successfully registered: $TASK_DEF_ARN"
 
-      - name: Replace AppSpec Placeholder
+
+      - name: Generate AppSpec
         run: |
-          sed -i "s|__TASK_DEF_ARN__|${TASK_DEF_ARN}|g" src/appspec.yml
-            
+          cp src/appspec.yml appspec-generated.yml
+          sed -i "s|__TASK_DEF_ARN__|${TASK_DEF_ARN}|g" appspec-generated.yml
+
+          echo "Generated AppSpec:"
+          cat appspec-generated.yml
+
+
       - name: Trigger CodeDeploy
         run: |
-          APPSPEC_JSON_CONTENT=$(jq -Rs '.' src/appspec.yml)
-
-          cat clean-task-def.json
-          
-          echo "{
-            \"revisionType\": \"AppSpecContent\",
-            \"appSpecContent\": {
-              \"content\": $APPSPEC_JSON_CONTENT
-            }
-          }" > revision.json
-
           aws deploy create-deployment \
-            --application-name "url-shortener-app" \
-            --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
-            --revision file://revision.json
+          --application-name ${{ env.CODEDEPLOY_APP }} \
+          --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
+          --revision revisionType=AppSpecContent,appSpecContent={file=appspec-generated.yml}
         # appSpecContent JSON escapes newlines to avoid CLI fail
 
