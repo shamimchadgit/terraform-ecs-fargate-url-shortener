@@ -29,7 +29,7 @@ def delivery_report(err, msg):
 # Shutdown flush (gracefully)
 atexit.register(lambda: producer.flush())
 
-# FastAPI app
+#FastAPI app
 
 app = FastAPI(title="URL Shortener")
 

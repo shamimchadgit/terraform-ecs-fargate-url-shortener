@@ -122,9 +122,11 @@ jobs:
 
       - name: Trigger CodeDeploy
         run: |
+          APPSPEC_CONTENT=$(jq -Rs . appspec-generated.yml)
+
           aws deploy create-deployment \
-          --application-name ${{ env.CODEDEPLOY_APP }} \
-          --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
-          --revision revisionType=AppSpecContent,appSpecContent={file=appspec-generated.yml}
+            --application-name ${{ env.CODEDEPLOY_APP }} \
+            --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
+            --revision "revisionType=AppSpecContent,appSpecContent={content=$APPSPEC_CONTENT}"
         # appSpecContent JSON escapes newlines to avoid CLI fail
 
