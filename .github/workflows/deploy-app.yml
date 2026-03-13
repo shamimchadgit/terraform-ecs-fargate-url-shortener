@@ -94,10 +94,12 @@ jobs:
 
           aws ecs describe-task-definition --task-definition $TASK_FAMILY --query 'taskDefinition' > task-def.json
 
-          jq --arg IMAGE "$IMAGE_URI" --arg NAME "ecs-task-definition" ' \
-            'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy) 
-            | .containerDefinitions |=map( if .name == $NAME then .image = $IMAGE else . end) \
-            task-def.json > clean-task-def.json
+          jq --arg IMAGE "$IMAGE_URI" --arg NAME "ecs-task-definition" '
+            del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)
+            | .containerDefinitions |= map(
+                 if .name == $NAME then .image = $IMAGE else . end
+              )
+          ' task-def.json > clean-task-def.json
 
           cat clean-task-def.json | grep image
 
@@ -108,6 +110,7 @@ jobs:
 
           echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
           echo "Successfully registered: $TASK_DEF_ARN"
+          
       - name: Replace AppSpec Placeholder
         run: |
           sed -i "s|__TASK_DEF_ARN__|${TASK_DEF_ARN}|g" src/appspec.yml
