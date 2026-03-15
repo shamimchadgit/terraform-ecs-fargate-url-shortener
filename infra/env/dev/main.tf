@@ -71,6 +71,8 @@ module "codedeploy" {
   green_target_group_name = module.alb.tg_green_name
   alb_listener_arn        = module.alb.alb_listener
   alb_test_listener_arn   = module.alb.alb_test_listener
+
+  depends_on = [ module.ecs, module.ecs_consumer ]
 }
 
 # WAF
@@ -141,6 +143,10 @@ module "ecs_consumer" {
 resource "aws_s3_bucket" "kafka_assets" {
   bucket        = "url-shortener-kafka-assets-dev"
   force_destroy = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_object" "kafka_binary" {
