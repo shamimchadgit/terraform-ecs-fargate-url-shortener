@@ -79,7 +79,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           ignore-unfixed: true
-          image-ref: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:${{ env.IMAGE_TAG }}
+          image-ref: ${{ env.FULL_IMAGE }}
           severity: CRITICAL,HIGH
           exit-code: 1
 
@@ -92,20 +92,26 @@ jobs:
         id: taskdef
         run: |
           TASK_FAMILY="url-shortener-task"
-          IMAGE_URI="${{ env.FULL_IMAGE }}"
-          
-          echo "Fetching current task definition for: $TASK_FAMILY"
+          IMAGE_TAG=${GITHUB_SHA::7}
+          IMAGE_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:${IMAGE_TAG}"
+          CONTAINER_NAME="ecs-task-definition"
+
+          echo "Updating $TASK_FAMILY with image: $IMAGE_URI"
 
           aws ecs describe-task-definition --task-definition $TASK_FAMILY --query 'taskDefinition' > task-def.json
 
-          jq --arg IMAGE "$IMAGE_URI" --arg NAME "ecs-task-definition" '
+          jq --arg IMAGE "$IMAGE_URI" --arg NAME "$CONTAINER_NAME" '
             del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)
             | .containerDefinitions |= map(
                  if .name == $NAME then .image = $IMAGE else . end
               )
           ' task-def.json > clean-task-def.json
 
-          cat clean-task-def.json | grep image
+          if ! grep -q "$IMAGE_TAG" clean-task-def.json; then
+            echo "❌ ERROR: The image tag $IMAGE_TAG was not found in clean-task-def.json."
+            echo "Check if the container name in AWS is actually '$CONTAINER_NAME'"
+            exit 1
+          fi
 
           TASK_DEF_ARN=$(aws ecs register-task-definition \
             --cli-input-json file://clean-task-def.json \
@@ -134,7 +140,7 @@ jobs:
             --application-name ${{ env.CODEDEPLOY_APP }} \
             --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
             --revision file://revision.json \
-            --query 'deploymentID' --output text)
+            --query 'deploymentId' --output text)
           
           if [ -z "$DEPLOYMENT_ID" ] || [ "$DEPLOYMENT_ID" == "None" ]; then
             echo "❌ Deployment was not created. Exiting."
