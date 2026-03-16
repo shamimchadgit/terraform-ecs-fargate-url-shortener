@@ -120,7 +120,7 @@ def resolve(short_url: str):
         
     return RedirectResponse(full_url)
  
-###Test FastAPI works 
+### Test FastAPI works 
 # from fastapi import FastAPI
 
 # app = FastAPI()
