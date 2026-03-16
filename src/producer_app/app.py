@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import hashlib
 import time
 import atexit
-from producer_app.ddb import put_mapping, get_mapping
+from ddb import put_mapping, get_mapping
 from confluent_kafka import Producer
 import os
 import json
