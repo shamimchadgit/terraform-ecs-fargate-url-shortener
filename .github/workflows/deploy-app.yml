@@ -54,6 +54,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -113,11 +114,12 @@ jobs:
 
       - name: Replace AppSpec Placeholder
         run: |
-          sed -i "s|__TASK_DEF_ARN__|${TASK_DEF_ARN}|g" src/appspec.yml
+          cp src/appspec.yml src/appspec-deploy.yml
+          sed -i "s|__TASK_DEF_ARN__|${TASK_DEF_ARN}|g" src/appspec-deploy.yml
             
       - name: Trigger CodeDeploy
         run: |
-          APPSPEC_JSON_CONTENT=$(jq -Rs '.' src/appspec.yml)
+          APPSPEC_JSON_CONTENT=$(jq -Rs '.' src/appspec-deploy.yml)
           
           echo "{
             \"revisionType\": \"AppSpecContent\",
@@ -125,8 +127,11 @@ jobs:
               \"content\": $APPSPEC_JSON_CONTENT
             }
           }" > revision.json
-          aws deploy create-deployment \
+          DEPLOYMENT_ID=$(aws deploy create-deployment \
             --application-name ${{ env.CODEDEPLOY_APP }} \
             --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
-            --revision file://revision.json
+            --revision file://revision.json \
+            --query 'deploymentID' --output text)
+
+          aws deploy wait deployment-successful --deployment-id $DEPLOYMENT_ID
         # appSpecContent JSON escapes newlines to avoid CLI fail
