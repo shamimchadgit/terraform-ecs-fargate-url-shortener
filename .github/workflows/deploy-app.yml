@@ -132,6 +132,13 @@ jobs:
             --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
             --revision file://revision.json \
             --query 'deploymentID' --output text)
+          
+          if [ -z "$DEPLOYMENT_ID" ] || [ "$DEPLOYMENT_ID" == "None" ]; then
+            echo "❌ Deployment was not created. Exiting."
+          fi
+
+          echo "Deployment created: $DEPLOYMENT_ID. Waiting for it to succeed..."
 
           aws deploy wait deployment-successful --deployment-id $DEPLOYMENT_ID
+          echo "✅ Deployment suceeded"
         # appSpecContent JSON escapes newlines to avoid CLI fail
