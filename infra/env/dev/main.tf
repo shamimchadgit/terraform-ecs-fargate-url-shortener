@@ -72,7 +72,7 @@ module "codedeploy" {
   alb_listener_arn        = module.alb.alb_listener
   alb_test_listener_arn   = module.alb.alb_test_listener
 
-  depends_on = [ module.ecs, module.ecs_consumer ]
+  depends_on = [module.ecs, module.ecs_consumer]
 }
 
 # WAF
@@ -104,9 +104,9 @@ module "iam_github_oidc" {
   ecr_consumer_repo_arn       = module.ecr.ecr_consumer_repo_arn
   ecs_consumer_task_role_arn  = module.ecs_consumer.ecs_task_role_arn
 
-  s3_arn        = var.s3_arn
-  s3_assets_arn = var.s3_assets_arn
-  kms_arn       = var.kms_arn
+  s3_arn           = var.s3_arn
+  s3_assets_arn    = var.s3_assets_arn
+  kms_arn          = var.kms_arn
   admin_policy_arn = var.admin_policy_arn
 }
 

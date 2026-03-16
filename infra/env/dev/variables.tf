@@ -125,5 +125,5 @@ variable "kms_arn" {
 }
 
 variable "admin_policy_arn" {
-    type = string
+  type = string
 }

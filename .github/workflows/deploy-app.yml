@@ -5,7 +5,7 @@ on:
     branches: [ main ]
     paths:
       - "src/producer_app/**"
-      - "!src/analytics-consumer/**"
+      - "!src/analytics_consumer/**"
 
 permissions:
   id-token: write
@@ -110,7 +110,7 @@ jobs:
 
           echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
           echo "Successfully registered: $TASK_DEF_ARN"
-          
+
       - name: Replace AppSpec Placeholder
         run: |
           sed -i "s|__TASK_DEF_ARN__|${TASK_DEF_ARN}|g" src/appspec.yml
