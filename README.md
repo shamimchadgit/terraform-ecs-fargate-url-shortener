@@ -14,6 +14,8 @@ Highlights:
 
 ## Architecture Diagram
 
+![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/0c2c298f765c615123548c2bdb25ec2bc6fc4d8f/architecture.drawio.png)
+
 ---
 
 ## Tech Stack
