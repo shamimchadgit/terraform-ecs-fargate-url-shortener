@@ -123,6 +123,7 @@ curl -k -X POST https://<ALB-DNS-NAME>/shorten \
 **Run**
 `curl -k -i https://<ALB-DNS-NAME>/short/<ID>`
 
+![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/1d541ea06805b67bb55fd7de549aae8b63864950/Resolve_Analytics.png)
 
 ---
 
@@ -139,6 +140,8 @@ However, as my set-up does not feature a mulit-node Kafka cluster, to use a stat
 The screenshots below illustrate the deployment and workflows working in unison: 
 
 **CodeDeploy Deployment**
+
+![image alt]()
 
 
 
