@@ -157,6 +157,8 @@ The screenshots below illustrate the deployment and workflows working in unison:
 **Terraform Plan**
 - Triggered by a PR if a team is working and changes are being made
 
+![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/56098081fb79f9a5f30914bdc15511d3b880b136/terraform-plan.png)
+
 **Terraform Apply**
 
 **Terraform Destroy**
