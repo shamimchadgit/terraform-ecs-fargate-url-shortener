@@ -117,8 +117,8 @@ curl -k -X POST https://<ALB-DNS-NAME>/shorten \
   - Exposes health check endpoints
 
 - **Consumer App**
-- Subscribes to topic 'url-clicks'
-- Updates click counts in DynamoDB
+  - Subscribes to topic 'url-clicks'
+  - Updates click counts in DynamoDB
 
 - **Kafka (Self-managed on EC2)**
   - Single-node Kafka broker (KRaft mode)
