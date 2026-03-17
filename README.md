@@ -101,7 +101,7 @@ Highlights:
 
 **Run**
 `curl -k -i https://<ALB-DNS-NAME>/healthz`
-
+![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/672dc954191586f3efd41ffc2e8628aaee6b8aa3/Testing_Service.png)
 
 
 2. **Shorten URL (Producer)**
