@@ -42,27 +42,105 @@ def root():
     return """
     <html>
         <head>
-            <title>URL Shortener</title>
+            <title>Shamim's URL Shortener</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;
                     text-align: center;
-                    margin-top: 50px;
+                    margin-top: 80px;
+                    background-color: #f4f6f8;
                 }
-                input, button {
+                .container {
+                    background: white;
+                    padding: 30px;
+                    border-radius: 10px;
+                    width: 400px;
+                    margin: auto;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                }
+                input {
+                    width: 90%;
                     padding: 10px;
-                    margin: 5px;
-                    width: 300px;
+                    margin-top: 15px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
                 }
-                h1 { color: #333; }
+                button {
+                    padding: 10px 20px;
+                    margin-top: 15px;
+                    border: none;
+                    background-color: #007bff;
+                    color: white;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+                button:hover {
+                    background-color: #0056b3;
+                }
+                .result {
+                    margin-top: 20px;
+                    word-break: break-all;
+                }
+                h1 {
+                    margin-bottom: 10px;
+                }
             </style>
         </head>
         <body>
-            <h1>Welcome to the URL Shortener</h1>
-            <p>
-                Use <code>POST /shorten</code> to shorten a URL via JSON,
-                or <code>GET /short/&lt;id&gt;</code> to resolve it.
-            </p>
+            <div class="container">
+                <h1>Shamim's URL Shortener</h1>
+                <p>Turn long URLs into short, shareable links</p>
+
+                <input id="urlInput" type="text" placeholder="Enter your long URL here" />
+                <br>
+                <button onclick="shortenUrl()">Shorten</button>
+
+                <div class="result" id="result"></div>
+            </div>
+
+            <script>
+                async function shortenUrl() {
+                    const url = document.getElementById("urlInput").value;
+
+                    if (!url) {
+                        alert("Please enter a URL");
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch("/shorten", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ url: url })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            const shortLink = window.location.origin + "/short/" + data.short;
+
+                            document.getElementById("result").innerHTML = `
+                                <p><strong>Short URL:</strong></p>
+                                <a href="${shortLink}" target="_blank">${shortLink}</a>
+                                <br><br>
+                                <button onclick="copyToClipboard('${shortLink}')">Copy</button>
+                            `;
+                        } else {
+                            document.getElementById("result").innerText = data.detail;
+                        }
+
+                    } catch (err) {
+                        document.getElementById("result").innerText = "Error shortening URL";
+                    }
+                }
+
+                function copyToClipboard(text) {
+                    navigator.clipboard.writeText(text);
+                    alert("Copied to clipboard!");
+                }
+            </script>
         </body>
     </html>
     """
