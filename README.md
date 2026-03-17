@@ -161,6 +161,8 @@ The screenshots below illustrate the deployment and workflows working in unison:
 
 **Terraform Apply**
 
+![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/3028e4723d610a10fbcb5f8afd6b329b42740135/terraform-apply.png)
+
 **Terraform Destroy**
 
 
