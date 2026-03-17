@@ -7,7 +7,7 @@ the system is designed to demonstarte modern-cloud-native architecture principle
 
 ## Why This Project
 
-Historic URL shorteners are often rightly coupled systems when analytics processing happens synchronously. This provides a single point of failure, in-turn increased latency and limits scalability. 
+Historic URL shorteners are often tightly coupled systems when analytics processing happens synchronously. This provides a single point of failure, in-turn increases latency and limits scalability. 
 
 This project illustrates how to build secure, cost-conscious AWS infrastructure that:
 - Decouples user-facing operations from analytics processing
