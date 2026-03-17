@@ -101,6 +101,7 @@ Highlights:
 
 **Run**
 `curl -k -i https://<ALB-DNS-NAME>/healthz`
+
 ![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/672dc954191586f3efd41ffc2e8628aaee6b8aa3/Testing_Service.png)
 
 
@@ -111,6 +112,8 @@ Highlights:
 curl -k -X POST https://<ALB-DNS-NAME>/shorten \
      -H "Content-Type: application/json" \
      -d '{"url": "https://dev.shamimchaudhury.uk"}
+
+![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/20d8b699c0e0c2c2f81fa38c0526e3c8fe0d72a5/Shorten_url.png)
 
 
 
