@@ -147,6 +147,8 @@ The screenshots below illustrate the deployment and workflows working in unison:
 
 **Deploy Producer App**
 
+![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/cd1fd13aaa154d3071a7d1ff414cd21327513095/deploy-app.png)
+
 
 **Deploy Consumer App**
 
