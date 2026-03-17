@@ -141,7 +141,7 @@ The screenshots below illustrate the deployment and workflows working in unison:
 
 **CodeDeploy Deployment**
 
-![image alt]()
+![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/9d109eff17758faaebc03287f745e42a3f0ad193/codedeploy.png)
 
 
 
