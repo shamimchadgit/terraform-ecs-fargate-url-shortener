@@ -100,7 +100,7 @@ Highlights:
 - Ensures ALB, WAF and ECS are connected
 
 **Run**
-curl -k -i https://<ALB-DNS-NAME>/healthz
+`curl -k -i https://<ALB-DNS-NAME>/healthz`
 
 
 
@@ -110,7 +110,7 @@ curl -k -i https://<ALB-DNS-NAME>/healthz
 **Run**
 curl -k -X POST https://<ALB-DNS-NAME>/shorten \
      -H "Content-Type: application/json" \
-     -d '{"url": "https://dev.shamimchaudhury.uk"}'
+     -d '{"url": "https://dev.shamimchaudhury.uk"}
 
 
 
@@ -118,7 +118,7 @@ curl -k -X POST https://<ALB-DNS-NAME>/shorten \
 - Triggers a read from DynamoDB and emits an event to the EC2 Kafka Broker
 
 **Run**
-curl -k -i https://<ALB-DNS-NAME>/short/<ID>
+`curl -k -i https://<ALB-DNS-NAME>/short/<ID>`
 
 
 ---
