@@ -152,6 +152,8 @@ The screenshots below illustrate the deployment and workflows working in unison:
 
 **Deploy Consumer App**
 
+![image alt](https://github.com/shamimchadgit/terraform-ecs-fargate-url-shortener-kafka/blob/e7a2226b7dbf951af583118d3724893b3994ce89/deploy-consumer.png)
+
 **Terraform Plan**
 - Triggered by a PR if a team is working and changes are being made
 
